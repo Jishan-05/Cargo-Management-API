@@ -2,6 +2,7 @@ using CargoManagementSystem.Data;
 using CargoManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CargoManagementSystem.Repositories
@@ -15,53 +16,61 @@ namespace CargoManagementSystem.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<City>> GetAllCitiesAsync()
+        public async Task<List<City>> GetCitiesAsync()
         {
             return await _context.Cities
-                                 .Include(c => c.State)
-                                 .Include(c => c.DeliveryrouteFromCities)
-                                 .Include(c => c.DeliveryrouteToCities)
-                                 .Include(c => c.ParcelFromCities)
-                                 .Include(c => c.ParcelToCities)
-                                 .ToListAsync();
+                .Include(c => c.State)
+                .ThenInclude(s => s.Country)
+                .ToListAsync();
         }
 
-        public async Task<City?> GetCityByIdAsync(int id)
+        public async Task<City> GetCityByIdAsync(int id)
         {
             return await _context.Cities
-                                 .Include(c => c.State)
-                                 .Include(c => c.DeliveryrouteFromCities)
-                                 .Include(c => c.DeliveryrouteToCities)
-                                 .Include(c => c.ParcelFromCities)
-                                 .Include(c => c.ParcelToCities)
-                                 .FirstOrDefaultAsync(c => c.Id == id);
+                .Include(c => c.State)
+                .ThenInclude(s => s.Country)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<City> AddCityAsync(City city)
+        public async Task<State> GetStateByNameAsync(string stateName)
+        {
+            return await _context.States
+                .Include(s => s.Country)
+                .FirstOrDefaultAsync(s => s.Name == stateName);
+        }
+
+        public async Task<bool> CityExistsInStateAsync(string cityName, int stateId)
+        {
+            return await _context.Cities.AnyAsync(c => c.Name == cityName && c.StateId == stateId);
+        }
+
+        public async Task AddCityAsync(City city)
         {
             _context.Cities.Add(city);
             await _context.SaveChangesAsync();
-            return city;
         }
 
-        public async Task<City> UpdateCityAsync(City city)
+        public async Task UpdateCityAsync(City city)
         {
-            _context.Entry(city).State = EntityState.Modified;
+            _context.Cities.Update(city);
             await _context.SaveChangesAsync();
-            return city;
         }
 
-        public async Task<bool> DeleteCityAsync(int id)
+        public async Task DeleteCityAsync(City city)
         {
-            var city = await _context.Cities.FindAsync(id);
-            if (city == null)
-            {
-                return false;
-            }
-
             _context.Cities.Remove(city);
             await _context.SaveChangesAsync();
-            return true;
         }
+
+        public async Task<bool> CityExistsAsync(int id)
+        {
+            return await _context.Cities.AnyAsync(c => c.Id == id);
+        }
+
+        public async Task<City?> GetCityByNameAsync(string cityName)
+        {
+            return await _context.Cities.FirstOrDefaultAsync(c => c.Name == cityName);
+        }
+
     }
 }

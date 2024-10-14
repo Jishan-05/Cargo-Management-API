@@ -1,6 +1,7 @@
 using CargoManagementSystem.Data;
 using CargoManagementSystem.Models;
 using CargoManagementSystem.DTOs;
+using CargoManagementSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,11 +16,25 @@ public class AdminController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IConfiguration _configuration;
+    private readonly IAdminService _adminService;
 
-    public AdminController(AppDbContext context, IConfiguration configuration)
+
+    public AdminController(AppDbContext context, IConfiguration configuration, IAdminService adminService)
     {
         _context = context;
         _configuration = configuration;
+        _adminService = adminService;
+    }
+
+    [HttpGet("admin-list")]
+    public async Task<IActionResult> GetAdminList()
+    {
+        var adminList = await _adminService.GetAllAdminsAsync();
+        if (adminList == null || adminList.Count == 0)
+        {
+            return NotFound("No admins found.");
+        }
+        return Ok(adminList);
     }
 
     [HttpPost("login")]

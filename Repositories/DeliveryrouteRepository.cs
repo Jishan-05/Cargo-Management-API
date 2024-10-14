@@ -1,71 +1,51 @@
 using CargoManagementSystem.Data;
 using CargoManagementSystem.Models;
-using CargoManagementSystem.Repositories;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore; 
 
-namespace CargoManagementSystem.Repositories
+public class DeliveryRouteRepository : IDeliveryRouteRepository
 {
-    public class DeliveryrouteRepository : IDeliveryrouteRepository
+    private readonly AppDbContext _context;
+
+    public DeliveryRouteRepository(AppDbContext context)
     {
-        private readonly AppDbContext _context;
-
-        public DeliveryrouteRepository(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<IEnumerable<Deliveryroute>> GetAllDeliveryroutesAsync()
-        {
-            return await _context.Deliveryroutes
-                                 .Include(dr => dr.FromCity)
-                                 .Include(dr => dr.ToCity)
-                                 .ToListAsync();
-        }
-
-        public async Task<Deliveryroute?> GetDeliveryrouteByIdAsync(int id)
-        {
-            return await _context.Deliveryroutes
-                                 .Include(dr => dr.FromCity)
-                                 .Include(dr => dr.ToCity)
-                                 .FirstOrDefaultAsync(dr => dr.Id == id);
-        }
-
-        public async Task<Deliveryroute> AddDeliveryrouteAsync(Deliveryroute deliveryroute)
-        {
-            _context.Deliveryroutes.Add(deliveryroute);
-            await _context.SaveChangesAsync();
-            return deliveryroute;
-        }
-
-        public async Task<Deliveryroute> UpdateDeliveryrouteAsync(Deliveryroute deliveryroute)
-        {
-            _context.Entry(deliveryroute).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return deliveryroute;
-        }
-
-        public async Task<bool> DeleteDeliveryrouteAsync(int id)
-        {
-            var deliveryroute = await _context.Deliveryroutes.FindAsync(id);
-            if (deliveryroute == null)
-            {
-                return false;
-            }
-
-            _context.Deliveryroutes.Remove(deliveryroute);
-            await _context.SaveChangesAsync();
-            return true;
-        }
+        _context = context;
     }
 
-    public interface IDeliveryrouteRepository
+    public async Task<List<Deliveryroute>> GetAllAsync()
     {
-        Task<IEnumerable<Deliveryroute>> GetAllDeliveryroutesAsync();
-        Task<Deliveryroute?> GetDeliveryrouteByIdAsync(int id);
-        Task<Deliveryroute> AddDeliveryrouteAsync(Deliveryroute deliveryroute);
-        Task<Deliveryroute> UpdateDeliveryrouteAsync(Deliveryroute deliveryroute);
-        Task<bool> DeleteDeliveryrouteAsync(int id);
+        return await _context.Deliveryroutes
+            .Include(dr => dr.FromCity)
+            .Include(dr => dr.ToCity)
+            .ToListAsync();
+    }
+
+    public async Task<Deliveryroute> GetByIdAsync(int id)
+    {
+        return await _context.Deliveryroutes
+            .Include(dr => dr.FromCity)
+            .Include(dr => dr.ToCity)
+            .FirstOrDefaultAsync(dr => dr.Id == id);
+    }
+
+    public async Task AddAsync(Deliveryroute deliveryRoute)
+    {
+        await _context.Deliveryroutes.AddAsync(deliveryRoute);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Deliveryroute deliveryRoute)
+    {
+        _context.Deliveryroutes.Update(deliveryRoute);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        var deliveryRoute = await _context.Deliveryroutes.FindAsync(id);
+        if (deliveryRoute != null)
+        {
+            _context.Deliveryroutes.Remove(deliveryRoute);
+            await _context.SaveChangesAsync();
+        }
     }
 }

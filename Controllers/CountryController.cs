@@ -1,5 +1,5 @@
-using CargoManagementSystem.Models;
-using CargoManagementSystem.Repositories;
+using CargoManagementSystem.DTOs;
+using CargoManagementSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,67 +10,74 @@ namespace CargoManagementSystem.Controllers
     [ApiController]
     public class CountryController : ControllerBase
     {
-        private readonly ICountryRepository _countryRepository;
+        private readonly CountryService _countryService;
 
-        public CountryController(ICountryRepository countryRepository)
+        public CountryController(CountryService countryService)
         {
-            _countryRepository = countryRepository;
+            _countryService = countryService;
         }
 
         // GET: api/Country
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Country>>> GetCountries()
+        public async Task<ActionResult<List<CountryDto>>> GetCountries()
         {
-            var countries = await _countryRepository.GetAllCountriesAsync();
+            var countries = await _countryService.GetCountriesAsync();
             return Ok(countries);
-        }
-
-        // GET: api/Country/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Country>> GetCountry(int id)
-        {
-            var country = await _countryRepository.GetCountryByIdAsync(id);
-
-            if (country == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(country);
         }
 
         // POST: api/Country
         [HttpPost]
-        public async Task<ActionResult<Country>> PostCountry(Country country)
+        public async Task<ActionResult> CreateCountry([FromBody] CreateCountryDto createCountryDto)
         {
-            var createdCountry = await _countryRepository.AddCountryAsync(country);
-            return CreatedAtAction(nameof(GetCountry), new { id = createdCountry.Id }, createdCountry);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _countryService.CreateCountryAsync(createCountryDto);
+                return CreatedAtAction(nameof(GetCountries), new { name = createCountryDto.Name }, createCountryDto);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
         // PUT: api/Country/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCountry(int id, Country country)
+        public async Task<ActionResult> UpdateCountry(int id, [FromBody] UpdateCountryDto updateCountryDto)
         {
-            if (id != country.Id)
-            {
-                return BadRequest();
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            await _countryRepository.UpdateCountryAsync(country);
-            return NoContent();
+            try
+            {
+                await _countryService.UpdateCountryAsync(id, updateCountryDto);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
         // DELETE: api/Country/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCountry(int id)
+        public async Task<ActionResult> DeleteCountry(int id)
         {
-            var result = await _countryRepository.DeleteCountryAsync(id);
-            if (!result)
+            try
             {
-                return NotFound();
+                await _countryService.DeleteCountryAsync(id);
+                return NoContent();
             }
-
-            return NoContent();
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
     }
 }

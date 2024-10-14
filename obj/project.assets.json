@@ -4464,11 +4464,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\C#\\APIs\\CargoManagementSystem\\CargoManagementSystem.csproj",
+      "projectUniqueName": "c:\\Users\\it\\Desktop\\CargoManagementSystem\\CargoManagementSystem.csproj",
       "projectName": "CargoManagementSystem",
-      "projectPath": "D:\\C#\\APIs\\CargoManagementSystem\\CargoManagementSystem.csproj",
+      "projectPath": "c:\\Users\\it\\Desktop\\CargoManagementSystem\\CargoManagementSystem.csproj",
       "packagesPath": "C:\\Users\\it\\.nuget\\packages\\",
-      "outputPath": "D:\\C#\\APIs\\CargoManagementSystem\\obj\\",
+      "outputPath": "c:\\Users\\it\\Desktop\\CargoManagementSystem\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\it\\AppData\\Roaming\\NuGet\\NuGet.Config",

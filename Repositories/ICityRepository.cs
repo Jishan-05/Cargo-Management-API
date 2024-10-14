@@ -6,10 +6,18 @@ namespace CargoManagementSystem.Repositories
 {
     public interface ICityRepository
     {
-        Task<IEnumerable<City>> GetAllCitiesAsync();
-        Task<City?> GetCityByIdAsync(int id);
-        Task<City> AddCityAsync(City city);
-        Task<City> UpdateCityAsync(City city);
-        Task<bool> DeleteCityAsync(int id);
+        Task<List<City>> GetCitiesAsync();
+        Task<City> GetCityByIdAsync(int id);
+        Task<State> GetStateByNameAsync(string stateName);
+        Task<bool> CityExistsInStateAsync(string cityName, int stateId);
+        Task AddCityAsync(City city);
+        Task UpdateCityAsync(City city);
+        Task DeleteCityAsync(City city);
+        Task<bool> CityExistsAsync(int id);
+        
+        // for booking
+        Task<City?> GetCityByNameAsync(string cityName);
+
+
     }
 }

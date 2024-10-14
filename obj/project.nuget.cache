@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5kM0z+McJ+E=",
+  "dgSpecHash": "L1E/U2Tf1Kk=",
   "success": true,
-  "projectFilePath": "d:\\C#\\APIs\\CargoManagementSystem\\CargoManagementSystem.csproj",
+  "projectFilePath": "C:\\Users\\it\\Desktop\\CargoManagementSystem\\CargoManagementSystem.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\it\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\it\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

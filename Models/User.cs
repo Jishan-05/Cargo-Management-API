@@ -58,5 +58,5 @@ public partial class User
 
     [InverseProperty("UpdateByUser")]
     public virtual ICollection<Parcelstatus> Parcelstatuses { get; set; } = new List<Parcelstatus>();
-    
+    public string Name { get; internal set; }
 }

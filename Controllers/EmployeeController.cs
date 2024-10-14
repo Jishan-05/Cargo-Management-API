@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using CargoManagementSystem.Repositories;
+using CargoManagementSystem.Services;
 
 
 [Route("api/[controller]")]
@@ -18,11 +19,15 @@ public class EmployeeController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly IEmployeeRepository _employeeRepository;
 
-    public EmployeeController(AppDbContext context, IConfiguration configuration, IEmployeeRepository employeeRepository )
+    private readonly IEmployeeService _employeeService;
+
+    public EmployeeController(AppDbContext context, IConfiguration configuration, IEmployeeRepository employeeRepository, IEmployeeService employeeService )
     {
         _context = context;
         _configuration = configuration;
         _employeeRepository = employeeRepository;
+        _employeeService = employeeService;
+
     }
     
     
@@ -66,58 +71,64 @@ public class EmployeeController : ControllerBase
         return tokenString;
     }
 
+
+
+    // POST: api/Employee
+    [HttpPost]
+    public async Task<ActionResult<Employee>> CreateEmployee([FromBody] CreateEmployeeDto employeeDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var employee = await _employeeService.CreateAsync(employeeDto);
+        if (employee == null)
+        {
+            return BadRequest("Failed to create employee.");
+        }
+
+        // Returning the created employee with a link to its newly created resource
+        return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.Id }, employee);
+    }
+    
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateEmployee(int id, [FromBody] UpdateEmployeeDto employeeDto)
+    {
+        var updatedEmployee = await _employeeService.UpdateAsync(id, employeeDto);
+        if (updatedEmployee == null)
+        {
+            return NotFound();
+        }
+        return NoContent();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Employee>> GetEmployeeById(int id)
+    {
+        var employee = await _employeeService.GetByIdAsync(id);
+        if (employee == null)
+        {
+            return NotFound();
+        }
+        return Ok(employee);
+    }
+
     [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+    public async Task<ActionResult<IEnumerable<Employee>>> GetAllEmployees()
+    {
+        var employees = await _employeeService.GetAllAsync();
+        return Ok(employees);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteEmployee(int id)
+    {
+        var success = await _employeeService.DeleteAsync(id);
+        if (!success)
         {
-            var employees = await _employeeRepository.GetAllEmployeesAsync();
-            return Ok(employees);
+            return NotFound();
         }
-
-        // GET: api/Employee/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
-        {
-            var employee = await _employeeRepository.GetEmployeeByIdAsync(id);
-
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(employee);
-        }
-
-        // POST: api/Employee
-        [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
-        {
-            var createdEmployee = await _employeeRepository.AddEmployeeAsync(employee);
-            return CreatedAtAction(nameof(GetEmployee), new { id = createdEmployee.Id }, createdEmployee);
-        }
-
-        // PUT: api/Employee/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(int id, Employee employee)
-        {
-            if (id != employee.Id)
-            {
-                return BadRequest();
-            }
-
-            await _employeeRepository.UpdateEmployeeAsync(employee);
-            return NoContent();
-        }
-
-        // DELETE: api/Employee/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployee(int id)
-        {
-            var result = await _employeeRepository.DeleteEmployeeAsync(id);
-            if (!result)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
-        }
+        return NoContent();
+    }
 }

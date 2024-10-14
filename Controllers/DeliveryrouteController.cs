@@ -4,73 +4,50 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CargoManagementSystem.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class DeliveryRouteController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class DeliveryrouteController : ControllerBase
+    private readonly DeliveryRouteService _service;
+
+    public DeliveryRouteController(DeliveryRouteService service)
     {
-        private readonly IDeliveryrouteRepository _deliveryrouteRepository;
+        _service = service;
+    }
 
-        public DeliveryrouteController(IDeliveryrouteRepository deliveryrouteRepository)
-        {
-            _deliveryrouteRepository = deliveryrouteRepository;
-        }
+    [HttpGet]
+    public async Task<IActionResult> GetRoutes()
+    {
+        var routes = await _service.GetAllRoutesAsync();
+        return Ok(routes);
+    }
 
-        // GET: api/Deliveryroute
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Deliveryroute>>> GetDeliveryroutes()
-        {
-            var deliveryroutes = await _deliveryrouteRepository.GetAllDeliveryroutesAsync();
-            return Ok(deliveryroutes);
-        }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetRoute(int id)
+    {
+        var route = await _service.GetRouteByIdAsync(id);
+        if (route == null) return NotFound();
+        return Ok(route);
+    }
 
-        // GET: api/Deliveryroute/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Deliveryroute>> GetDeliveryroute(int id)
-        {
-            var deliveryroute = await _deliveryrouteRepository.GetDeliveryrouteByIdAsync(id);
+    [HttpPost]
+    public async Task<IActionResult> CreateRoute([FromBody] CreateDeliveryRouteDto createDto)
+    {
+        await _service.CreateRouteAsync(createDto);
+        return CreatedAtAction(nameof(GetRoute), new { id = createDto }, createDto);
+    }
 
-            if (deliveryroute == null)
-            {
-                return NotFound();
-            }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateRoute(int id, [FromBody] UpdateDeliveryRouteDto updateDto)
+    {
+        await _service.UpdateRouteAsync(id, updateDto);
+        return NoContent();
+    }
 
-            return Ok(deliveryroute);
-        }
-
-        // POST: api/Deliveryroute
-        [HttpPost]
-        public async Task<ActionResult<Deliveryroute>> PostDeliveryroute(Deliveryroute deliveryroute)
-        {
-            var createdDeliveryroute = await _deliveryrouteRepository.AddDeliveryrouteAsync(deliveryroute);
-            return CreatedAtAction(nameof(GetDeliveryroute), new { id = createdDeliveryroute.Id }, createdDeliveryroute);
-        }
-
-        // PUT: api/Deliveryroute/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutDeliveryroute(int id, Deliveryroute deliveryroute)
-        {
-            if (id != deliveryroute.Id)
-            {
-                return BadRequest();
-            }
-
-            await _deliveryrouteRepository.UpdateDeliveryrouteAsync(deliveryroute);
-            return NoContent();
-        }
-
-        // DELETE: api/Deliveryroute/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDeliveryroute(int id)
-        {
-            var result = await _deliveryrouteRepository.DeleteDeliveryrouteAsync(id);
-            if (!result)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
-        }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteRoute(int id)
+    {
+        await _service.DeleteRouteAsync(id);
+        return NoContent();
     }
 }

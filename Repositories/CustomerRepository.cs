@@ -1,3 +1,4 @@
+
 using CargoManagementSystem.Data;
 using CargoManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
@@ -11,93 +12,90 @@ public class CustomerRepository : ICustomerRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Customer>> GetAllCustomersAsync()
+    public async Task<Customer> CreateAsync(CreateCustomerDto customerDto)
     {
-        return await _context.Customers
-            .Include(c => c.User)
-            .Select(c => new Customer
-            {
-                Id = c.Id,
-                UserId = c.UserId,
-                PhoneNumber = c.PhoneNumber,
-                Address = c.Address,
-                User = new User
-                {
-                    Id = c.User.Id,
-                    Username = c.User.Username,
-                    Password = c.User.Password,
-                    Email = c.User.Email,
-                    FirstName = c.User.FirstName,
-                    LastName = c.User.LastName,
-                    Role = c.User.Role,
-                    DateJoined = c.User.DateJoined
-                }
-            })
-            .ToListAsync();
+        var user = new User
+        {
+            Username = customerDto.Username,
+            FirstName = customerDto.FirstName,
+            LastName = customerDto.LastName,
+            Email = customerDto.Email,
+            Password = customerDto.Password, // Ensure you hash the password before saving
+            Role = "Customer", // Default role for the user
+            DateJoined = DateTime.Now
+        };
+
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
+
+        var customer = new Customer
+        {
+            UserId = user.Id,
+            PhoneNumber = customerDto.PhoneNumber,
+            Address = customerDto.Address
+        };
+
+        await _context.Customers.AddAsync(customer);
+        await _context.SaveChangesAsync();
+
+        return customer;
     }
 
-    public async Task<Customer> GetCustomerByIdAsync(int id)
+    public async Task<Customer> UpdateAsync(int id, UpdateCustomerDto customerDto)
     {
-        return await _context.Customers
-            .Include(c => c.User)
-            .Where(c => c.Id == id)
-            .Select(c => new Customer
-            {
-                Id = c.Id,
-                UserId = c.UserId,
-                PhoneNumber = c.PhoneNumber,
-                Address = c.Address,
-                User = new User
-                {
-                    Id = c.User.Id,
-                    Username = c.User.Username,
-                    Password = c.User.Password,
-                    Email = c.User.Email,
-                    FirstName = c.User.FirstName,
-                    LastName = c.User.LastName,
-                    Role = c.User.Role,
-                    DateJoined = c.User.DateJoined
-                }
-            })
-            .FirstOrDefaultAsync();
-    }
+        var customer = await _context.Customers.Include(c => c.User).FirstOrDefaultAsync(c => c.Id == id);
 
-    public async Task<Customer> CreateCustomerAsync(Customer customer)
-    {
-        // Add User first
-        _context.Users.Add(customer.User);
+        if (customer == null)
+        {
+            return null;
+        }
 
-        // Add Customer
-        _context.Customers.Add(customer);
+        customer.User.Username = customerDto.Username;
+        customer.User.FirstName = customerDto.FirstName;
+        customer.User.LastName = customerDto.LastName;
+        customer.User.Email = customerDto.Email;
+        customer.PhoneNumber = customerDto.PhoneNumber;
+        customer.Address = customerDto.Address;
 
         await _context.SaveChangesAsync();
         return customer;
     }
 
-    public async Task UpdateCustomerAsync(Customer customer)
+    public async Task<Customer> GetByIdAsync(int id)
     {
-        // Update User
-        _context.Entry(customer.User).State = EntityState.Modified;
-
-        // Update Customer
-        _context.Entry(customer).State = EntityState.Modified;
-        
-        await _context.SaveChangesAsync();
+        return await _context.Customers.Include(c => c.User).FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public async Task DeleteCustomerAsync(int id)
+    public async Task<IEnumerable<Customer>> GetAllAsync()
+    {
+        return await _context.Customers.Include(c => c.User).ToListAsync();
+    }
+
+    public async Task<bool> DeleteAsync(int id)
     {
         var customer = await _context.Customers.Include(c => c.User).FirstOrDefaultAsync(c => c.Id == id);
-        
-        if (customer != null)
+
+        if (customer == null)
         {
-            // Delete User
-            _context.Users.Remove(customer.User);
-
-            // Then delete Customer
-            _context.Customers.Remove(customer);
-
-            await _context.SaveChangesAsync();
+            return false;
         }
+
+        _context.Customers.Remove(customer);
+
+        if (customer.User != null)
+        {
+            _context.Users.Remove(customer.User); // Delete related user
+        }
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+
+    public async Task<Customer> GetCustomerByIdAsync(int id)
+    {
+        return await _context.Customers
+            .Include(c => c.User)  // Include related User if needed
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\C#\\APIs\\CargoManagementSystem\\CargoManagementSystem.csproj": {}
+    "C:\\Users\\it\\Desktop\\CargoManagementSystem\\CargoManagementSystem.csproj": {}
   },
   "projects": {
-    "d:\\C#\\APIs\\CargoManagementSystem\\CargoManagementSystem.csproj": {
+    "C:\\Users\\it\\Desktop\\CargoManagementSystem\\CargoManagementSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\C#\\APIs\\CargoManagementSystem\\CargoManagementSystem.csproj",
+        "projectUniqueName": "C:\\Users\\it\\Desktop\\CargoManagementSystem\\CargoManagementSystem.csproj",
         "projectName": "CargoManagementSystem",
-        "projectPath": "d:\\C#\\APIs\\CargoManagementSystem\\CargoManagementSystem.csproj",
+        "projectPath": "C:\\Users\\it\\Desktop\\CargoManagementSystem\\CargoManagementSystem.csproj",
         "packagesPath": "C:\\Users\\it\\.nuget\\packages\\",
-        "outputPath": "d:\\C#\\APIs\\CargoManagementSystem\\obj\\",
+        "outputPath": "C:\\Users\\it\\Desktop\\CargoManagementSystem\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\it\\AppData\\Roaming\\NuGet\\NuGet.Config",

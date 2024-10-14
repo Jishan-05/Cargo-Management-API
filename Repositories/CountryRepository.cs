@@ -1,7 +1,9 @@
 using CargoManagementSystem.Data;
+using CargoManagementSystem.DTOs;
 using CargoManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CargoManagementSystem.Repositories
@@ -15,41 +17,50 @@ namespace CargoManagementSystem.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Country>> GetAllCountriesAsync()
+        public async Task<List<CountryDto>> GetCountriesAsync()
         {
-            return await _context.Countries.Include(c => c.States).ToListAsync();
+            return await _context.Countries
+                .Select(c => new CountryDto { Name = c.Name })
+                .ToListAsync();
         }
 
-        public async Task<Country?> GetCountryByIdAsync(int id)
+        public async Task<Country> GetCountryByIdAsync(int id)
         {
-            return await _context.Countries.Include(c => c.States).FirstOrDefaultAsync(c => c.Id == id);
+            return await _context.Countries.FindAsync(id);
         }
 
-        public async Task<Country> AddCountryAsync(Country country)
+        public async Task<Country> GetCountryByNameAsync(string name)
+        {
+            return await _context.Countries
+                .FirstOrDefaultAsync(c => c.Name == name);
+        }
+
+        public async Task AddCountryAsync(Country country)
         {
             _context.Countries.Add(country);
             await _context.SaveChangesAsync();
-            return country;
         }
 
-        public async Task<Country> UpdateCountryAsync(Country country)
+        public async Task UpdateCountryAsync(Country country)
         {
-            _context.Entry(country).State = EntityState.Modified;
+            _context.Countries.Update(country);
             await _context.SaveChangesAsync();
-            return country;
         }
 
-        public async Task<bool> DeleteCountryAsync(int id)
+        public async Task DeleteCountryAsync(Country country)
         {
-            var country = await _context.Countries.FindAsync(id);
-            if (country == null)
-            {
-                return false;
-            }
-
             _context.Countries.Remove(country);
             await _context.SaveChangesAsync();
-            return true;
+        }
+
+        public async Task<bool> CountryExistsByNameAsync(string name)
+        {
+            return await _context.Countries.AnyAsync(c => c.Name == name);
+        }
+
+        public async Task<bool> CountryExistsByIdAsync(int id)
+        {
+            return await _context.Countries.AnyAsync(c => c.Id == id);
         }
     }
 }

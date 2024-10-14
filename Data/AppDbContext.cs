@@ -91,6 +91,19 @@ public partial class AppDbContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.Customers).HasConstraintName("FK__customer__user_i__3C69FB99");
         });
+        modelBuilder.Entity<Customer>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__customer__3213E83F2F848D3E");
+
+            // Specify the foreign key constraint and set Cascade delete behavior
+            entity.HasOne(d => d.User)
+                .WithMany(p => p.Customers)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__customer__user_i__3C69FB99")
+                .OnDelete(DeleteBehavior.Cascade); // Enable Cascade Delete
+        });
+
+        base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Deliveryroute>(entity =>
         {

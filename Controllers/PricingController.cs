@@ -1,7 +1,5 @@
-using CargoManagementSystem.Models;
-using CargoManagementSystem.Repositories;
+using CargoManagementSystem.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CargoManagementSystem.Controllers
@@ -10,67 +8,72 @@ namespace CargoManagementSystem.Controllers
     [ApiController]
     public class PricingController : ControllerBase
     {
-        private readonly IPricingRepository _pricingRepository;
+        private readonly PricingService _pricingService;
 
-        public PricingController(IPricingRepository pricingRepository)
+        public PricingController(PricingService pricingService)
         {
-            _pricingRepository = pricingRepository;
+            _pricingService = pricingService;
         }
 
-        // GET: api/Pricing
+        // GET: api/pricing
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pricing>>> GetPricings()
+        public async Task<IActionResult> GetAllPricing()
         {
-            var pricings = await _pricingRepository.GetAllPricingsAsync();
-            return Ok(pricings);
-        }
-
-        // GET: api/Pricing/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Pricing>> GetPricing(int id)
-        {
-            var pricing = await _pricingRepository.GetPricingByIdAsync(id);
-
-            if (pricing == null)
-            {
-                return NotFound();
-            }
-
+            var pricing = await _pricingService.GetAllPricingAsync();
             return Ok(pricing);
         }
 
-        // POST: api/Pricing
-        [HttpPost]
-        public async Task<ActionResult<Pricing>> PostPricing(Pricing pricing)
+        // GET: api/pricing/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPricingById(int id)
         {
-            var createdPricing = await _pricingRepository.AddPricingAsync(pricing);
-            return CreatedAtAction(nameof(GetPricing), new { id = createdPricing.Id }, createdPricing);
-        }
-
-        // PUT: api/Pricing/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPricing(int id, Pricing pricing)
-        {
-            if (id != pricing.Id)
+            try
             {
-                return BadRequest();
+                var pricing = await _pricingService.GetPricingByIdAsync(id);
+                return Ok(pricing);
             }
-
-            await _pricingRepository.UpdatePricingAsync(pricing);
-            return NoContent();
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
-        // DELETE: api/Pricing/5
+        // POST: api/pricing
+        [HttpPost]
+        public async Task<IActionResult> CreatePricing([FromBody] CreatePricingDto createPricingDto)
+        {
+            await _pricingService.CreatePricingAsync(createPricingDto);
+            return Ok(new { message = "Pricing record created successfully." });
+        }
+
+        // PUT: api/pricing/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePricing(int id, [FromBody] UpdatePricingDto updatePricingDto)
+        {
+            try
+            {
+                await _pricingService.UpdatePricingAsync(id, updatePricingDto);
+                return Ok(new { message = "Pricing record updated successfully." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        // DELETE: api/pricing/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePricing(int id)
         {
-            var result = await _pricingRepository.DeletePricingAsync(id);
-            if (!result)
+            try
             {
-                return NotFound();
+                await _pricingService.DeletePricingAsync(id);
+                return Ok(new { message = "Pricing record deleted successfully." });
             }
-
-            return NoContent();
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
     }
 }

@@ -24,6 +24,10 @@ public partial class Employee
     [Column("address", TypeName = "text")]
     public string Address { get; set; } = null!;
 
+    [Column("position")]
+    [StringLength(255)]
+    public string Position { get; set; } = null!;
+
     [ForeignKey("UserId")]
     [InverseProperty("Employees")]
     public virtual User? User { get; set; }

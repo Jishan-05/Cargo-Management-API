@@ -1,5 +1,5 @@
-using CargoManagementSystem.Models;
-using CargoManagementSystem.Repositories;
+using CargoManagementSystem.DTOs;
+using CargoManagementSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,67 +10,74 @@ namespace CargoManagementSystem.Controllers
     [ApiController]
     public class StateController : ControllerBase
     {
-        private readonly IStateRepository _stateRepository;
+        private readonly StateService _stateService;
 
-        public StateController(IStateRepository stateRepository)
+        public StateController(StateService stateService)
         {
-            _stateRepository = stateRepository;
+            _stateService = stateService;
         }
 
         // GET: api/State
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<State>>> GetStates()
+        public async Task<ActionResult<List<StateDto>>> GetStates()
         {
-            var states = await _stateRepository.GetAllStatesAsync();
+            var states = await _stateService.GetStatesAsync();
             return Ok(states);
-        }
-
-        // GET: api/State/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<State>> GetState(int id)
-        {
-            var state = await _stateRepository.GetStateByIdAsync(id);
-
-            if (state == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(state);
         }
 
         // POST: api/State
         [HttpPost]
-        public async Task<ActionResult<State>> PostState(State state)
+        public async Task<ActionResult> CreateState([FromBody] CreateStateDto createStateDto)
         {
-            var createdState = await _stateRepository.AddStateAsync(state);
-            return CreatedAtAction(nameof(GetState), new { id = createdState.Id }, createdState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await _stateService.CreateStateAsync(createStateDto);
+                return CreatedAtAction(nameof(GetStates), new { name = createStateDto.Name }, createStateDto);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
         // PUT: api/State/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutState(int id, State state)
+        public async Task<ActionResult> UpdateState(int id, [FromBody] UpdateStateDto updateStateDto)
         {
-            if (id != state.Id)
-            {
-                return BadRequest();
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            await _stateRepository.UpdateStateAsync(state);
-            return NoContent();
+            try
+            {
+                await _stateService.UpdateStateAsync(id, updateStateDto);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
         // DELETE: api/State/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteState(int id)
+        public async Task<ActionResult> DeleteState(int id)
         {
-            var result = await _stateRepository.DeleteStateAsync(id);
-            if (!result)
+            try
             {
-                return NotFound();
+                await _stateService.DeleteStateAsync(id);
+                return NoContent();
             }
-
-            return NoContent();
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
     }
 }

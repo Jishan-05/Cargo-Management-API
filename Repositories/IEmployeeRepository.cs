@@ -1,15 +1,10 @@
 using CargoManagementSystem.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace CargoManagementSystem.Repositories
+public interface IEmployeeRepository
 {
-    public interface IEmployeeRepository
-    {
-        Task<IEnumerable<Employee>> GetAllEmployeesAsync();
-        Task<Employee?> GetEmployeeByIdAsync(int id);
-        Task<Employee> AddEmployeeAsync(Employee employee);
-        Task<Employee> UpdateEmployeeAsync(Employee employee);
-        Task<bool> DeleteEmployeeAsync(int id);
-    }
+    Task<Employee> CreateAsync(CreateEmployeeDto employeeDto);
+    Task<Employee> UpdateAsync(int id, UpdateEmployeeDto employeeDto);
+    Task<Employee> GetByIdAsync(int id);
+    Task<IEnumerable<Employee>> GetAllAsync();
+    Task<bool> DeleteAsync(int id);
 }

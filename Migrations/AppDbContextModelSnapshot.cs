@@ -278,6 +278,12 @@ namespace CargoManagementSystem.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("phone_number");
 
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("position");
+
                     b.Property<int?>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("user_id");
@@ -579,10 +585,6 @@ namespace CargoManagementSystem.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("password");
 
-                    b.Property<byte[]>("PasswordSalt")
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("password_salt");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -645,6 +647,7 @@ namespace CargoManagementSystem.Migrations
                     b.HasOne("CargoManagementSystem.Models.User", "User")
                         .WithMany("Customers")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK__customer__user_i__3C69FB99");
 
                     b.Navigation("User");

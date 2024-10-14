@@ -18,14 +18,15 @@ public class CustomerController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IConfiguration _configuration;
+    private readonly ICustomerService _customerService;
 
-    private readonly ICustomerRepository _customerRepository;
 
-    public CustomerController(AppDbContext context, IConfiguration configuration,ICustomerRepository customerRepository )
+    public CustomerController(AppDbContext context, IConfiguration configuration,ICustomerRepository customerRepository,ICustomerService customerService  )
     {
         _context = context;
         _configuration = configuration;
-        _customerRepository = customerRepository;
+        _customerService = customerService;
+
     }
 
     [HttpPost("register")]
@@ -114,18 +115,28 @@ public class CustomerController : ControllerBase
         return tokenString;
     }
 
-    
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Customer>>> GetAllCustomers()
+    [HttpPost]
+    public async Task<ActionResult<Customer>> CreateCustomer([FromBody] CreateCustomerDto customerDto)
     {
-        var customers = await _customerRepository.GetAllCustomersAsync();
-        return Ok(customers);
+        var customer = await _customerService.CreateAsync(customerDto);
+        return CreatedAtAction(nameof(GetCustomerById), new { id = customer.Id }, customer);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCustomer(int id, [FromBody] UpdateCustomerDto customerDto)
+    {
+        var updatedCustomer = await _customerService.UpdateAsync(id, customerDto);
+        if (updatedCustomer == null)
+        {
+            return NotFound();
+        }
+        return NoContent();
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Customer>> GetCustomer(int id)
+    public async Task<ActionResult<Customer>> GetCustomerById(int id)
     {
-        var customer = await _customerRepository.GetCustomerByIdAsync(id);
+        var customer = await _customerService.GetByIdAsync(id);
         if (customer == null)
         {
             return NotFound();
@@ -133,29 +144,21 @@ public class CustomerController : ControllerBase
         return Ok(customer);
     }
 
-    [HttpPost]
-    public async Task<ActionResult<Customer>> CreateCustomer(Customer customer)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Customer>>> GetAllCustomers()
     {
-        var createdCustomer = await _customerRepository.CreateCustomerAsync(customer);
-        return CreatedAtAction(nameof(GetCustomer), new { id = createdCustomer.Id }, createdCustomer);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCustomer(int id, Customer customer)
-    {
-        if (id != customer.Id)
-        {
-            return BadRequest();
-        }
-
-        await _customerRepository.UpdateCustomerAsync(customer);
-        return NoContent();
+        var customers = await _customerService.GetAllAsync();
+        return Ok(customers);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCustomer(int id)
     {
-        await _customerRepository.DeleteCustomerAsync(id);
+        var success = await _customerService.DeleteAsync(id);
+        if (!success)
+        {
+            return NotFound();
+        }
         return NoContent();
     }
 }

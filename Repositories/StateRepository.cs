@@ -15,47 +15,42 @@ namespace CargoManagementSystem.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<State>> GetAllStatesAsync()
+        public async Task<List<State>> GetStatesAsync()
         {
-            return await _context.States
-                                 .Include(s => s.Cities)
-                                 .Include(s => s.Country)
-                                 .ToListAsync();
+            return await _context.States.Include(s => s.Country).ToListAsync();
         }
 
-        public async Task<State?> GetStateByIdAsync(int id)
+        public async Task<State> GetStateByIdAsync(int id)
         {
-            return await _context.States
-                                 .Include(s => s.Cities)
-                                 .Include(s => s.Country)
-                                 .FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.States.Include(s => s.Country).FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task<State> AddStateAsync(State state)
+        public async Task AddStateAsync(State state)
         {
             _context.States.Add(state);
             await _context.SaveChangesAsync();
-            return state;
         }
 
-        public async Task<State> UpdateStateAsync(State state)
+        public async Task UpdateStateAsync(State state)
         {
-            _context.Entry(state).State = EntityState.Modified;
+            _context.States.Update(state);
             await _context.SaveChangesAsync();
-            return state;
         }
 
-        public async Task<bool> DeleteStateAsync(int id)
+        public async Task DeleteStateAsync(State state)
         {
-            var state = await _context.States.FindAsync(id);
-            if (state == null)
-            {
-                return false;
-            }
-
             _context.States.Remove(state);
             await _context.SaveChangesAsync();
-            return true;
+        }
+
+        public async Task<bool> StateExistsInCountryAsync(string stateName, int countryId)
+        {
+            return await _context.States.AnyAsync(s => s.Name == stateName && s.CountryId == countryId);
+        }
+
+        public async Task<Country> GetCountryByNameAsync(string countryName)
+        {
+            return await _context.Countries.FirstOrDefaultAsync(c => c.Name == countryName);
         }
     }
 }
