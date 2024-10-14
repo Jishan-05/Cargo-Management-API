@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Text;
 using CargoManagementSystem.Data;
 using CargoManagementSystem.Repositories;
+using CargoManagementSystem.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -24,24 +25,28 @@ builder.Services.AddControllersWithViews()
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
 
-// builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+// repositories
+// builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IContactusRepository, ContactusRepository>();
+builder.Services.AddScoped<IDeliveryRouteRepository, DeliveryRouteRepository>();
+builder.Services.AddScoped<IPricingRepository, PricingRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IStateRepository, StateRepository>();
 builder.Services.AddScoped<ICityRepository, CityRepository>();
-builder.Services.AddScoped<IDeliveryrouteRepository, DeliveryrouteRepository>();
-builder.Services.AddScoped<IPricingRepository, PricingRepository>();
-builder.Services.AddScoped<IContactusRepository, ContactusRepository>();
+builder.Services.AddScoped<IParcelRepository, ParcelRepository>();
+// services
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<StateService>();
+builder.Services.AddScoped<CountryService>();
+builder.Services.AddScoped<CityService>();
+builder.Services.AddScoped<PricingService>();
+builder.Services.AddScoped<DeliveryRouteService>();
 
-// builder.Services.AddScoped<ICustomerBookingRepository, CustomerBookingRepository>();
-
-
-
-
-
-
-// builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 // Add JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
