@@ -26,7 +26,7 @@ public class AdminController : ControllerBase
         _adminService = adminService;
     }
 
-    [HttpGet("admin-list")]
+    [HttpGet("admins")]
     public async Task<IActionResult> GetAdminList()
     {
         var adminList = await _adminService.GetAllAdminsAsync();

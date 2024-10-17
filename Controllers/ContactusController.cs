@@ -1,6 +1,7 @@
-using CargoManagementSystem.Models;
-using CargoManagementSystem.Repositories;
+using CargoManagementSystem.DTOs;
+using CargoManagementSystem.Services;
 using Microsoft.AspNetCore.Mvc;
+using CargoManagementSystem.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,26 +11,25 @@ namespace CargoManagementSystem.Controllers
     [ApiController]
     public class ContactUsController : ControllerBase
     {
-        private readonly IContactusRepository _repository;
+        private readonly IContactUsService _contactUsService;
 
-        public ContactUsController(IContactusRepository repository)
+        public ContactUsController(IContactUsService contactUsService)
         {
-            _repository = repository;
+            _contactUsService = contactUsService;
         }
 
-        // GET: api/contactus
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Contactus>>> GetAllContactUs()
+        public async Task<ActionResult<IEnumerable<Contactus>>> GetAll()
         {
-            var contactUsList = await _repository.GetAllAsync();
+            var contactUsList = await _contactUsService.GetAllContactUsAsync();
             return Ok(contactUsList);
         }
 
-        // GET: api/contactus/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Contactus>> GetContactUs(int id)
+        public async Task<ActionResult<Contactus>> GetById(int id)
         {
-            var contactUs = await _repository.GetByIdAsync(id);
+            var contactUs = await _contactUsService.GetContactUsByIdAsync(id);
+
             if (contactUs == null)
             {
                 return NotFound();
@@ -38,64 +38,56 @@ namespace CargoManagementSystem.Controllers
             return Ok(contactUs);
         }
 
-        // POST: api/contactus
         [HttpPost]
-        public async Task<ActionResult<Contactus>> PostContactUs(Contactus contactUs)
+        public async Task<ActionResult> Post(CreateContactUsDto createContactUsDto)
         {
-            if (contactUs == null)
+            if (createContactUsDto == null)
             {
                 return BadRequest();
             }
 
-            await _repository.CreateAsync(contactUs);
-            return CreatedAtAction(nameof(GetContactUs), new { id = contactUs.Id }, contactUs);
+            // Map CreateContactUsDto to Contactus model
+            var contactUs = new Contactus
+            {
+                Name = createContactUsDto.Name,
+                Email = createContactUsDto.Email,
+                PhoneNumber = createContactUsDto.PhoneNumber,
+                Message = createContactUsDto.Message
+            };
+
+            await _contactUsService.AddContactUsAsync(contactUs);
+
+            // Assuming Contactus has an Id property
+            return CreatedAtAction(nameof(GetById), new { id = contactUs.Id }, contactUs);
         }
 
-        // PUT: api/contactus/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContactUs(int id, Contactus contactUs)
+        public async Task<ActionResult> Put(int id, UpdateContactUsDto updateContactUsDto)
         {
-            if (id != contactUs.Id)
+            if (updateContactUsDto == null)
             {
                 return BadRequest();
             }
 
-            try
+            // Map UpdateContactUsDto to Contactus model
+            var contactUs = new Contactus
             {
-                await _repository.UpdateAsync(contactUs);
-            }
-            catch (Exception)
-            {
-                if (!await ContactUsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                Id = id,  // Ensure the ID is set to the correct value
+                Name = updateContactUsDto.Name,
+                Email = updateContactUsDto.Email,
+                PhoneNumber = updateContactUsDto.PhoneNumber,
+                Message = updateContactUsDto.Message
+            };
 
+            await _contactUsService.UpdateContactUsAsync(id, contactUs);
             return NoContent();
         }
 
-        // DELETE: api/contactus/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteContactUs(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var contactUs = await _repository.GetByIdAsync(id);
-            if (contactUs == null)
-            {
-                return NotFound();
-            }
-
-            await _repository.DeleteAsync(id);
+            await _contactUsService.DeleteContactUsAsync(id);
             return NoContent();
-        }
-
-        private async Task<bool> ContactUsExists(int id)
-        {
-            return await _repository.GetByIdAsync(id) != null;
         }
     }
 }

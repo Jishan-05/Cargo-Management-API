@@ -1,43 +1,64 @@
-using CargoManagementSystem.Models;
 using CargoManagementSystem.Data;
-using Microsoft.EntityFrameworkCore;
 using CargoManagementSystem.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CargoManagementSystem.Repositories
 {
-    public class ContactusRepository : IContactusRepository
+    public class ContactUsRepository : IContactUsRepository
     {
         private readonly AppDbContext _context;
 
-        public ContactusRepository(AppDbContext context)
+        public ContactUsRepository(AppDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<Contactus>> GetAllAsync() => await _context.Contactus.ToListAsync();
-
-        public async Task<Contactus> GetByIdAsync(int id) => await _context.Contactus.FirstOrDefaultAsync(c => c.Id == id);
-
-        public async Task CreateAsync(Contactus contactUs)
+        public async Task AddContactUs(Contactus contactUs)
         {
-            if (contactUs == null) throw new ArgumentNullException(nameof(contactUs));
             _context.Contactus.Add(contactUs);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Contactus contactUs)
+        public async Task<IEnumerable<Contactus>> GetAllContactUsAsync()
         {
-            if (contactUs == null) throw new ArgumentNullException(nameof(contactUs));
-            _context.Contactus.Update(contactUs);
+            return await _context.Contactus.ToListAsync();
+        }
+
+        public async Task<Contactus> GetContactUsByIdAsync(int id)
+        {
+            return await _context.Contactus.FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task UpdateContactUsAsync(int id, Contactus contactUs)
+        {
+            var existingContactUs = await _context.Contactus.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (existingContactUs == null)
+            {
+                throw new KeyNotFoundException("Contact Us entry not found");
+            }
+
+            existingContactUs.Name = contactUs.Name;
+            existingContactUs.Email = contactUs.Email;
+            existingContactUs.PhoneNumber = contactUs.PhoneNumber;
+            existingContactUs.Message = contactUs.Message;
+
+            _context.Contactus.Update(existingContactUs);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteContactUsAsync(int id)
         {
-            var contactUs = await GetByIdAsync(id);
-            if (contactUs == null) throw new KeyNotFoundException("Contact not found.");
+            var contactUs = await _context.Contactus.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (contactUs == null)
+            {
+                throw new KeyNotFoundException("Contact Us entry not found");
+            }
+
             _context.Contactus.Remove(contactUs);
             await _context.SaveChangesAsync();
         }
