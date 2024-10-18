@@ -128,7 +128,7 @@ public class BookingService : IBookingService
             Customer = customer,
             BookingDate = DateTime.Now,
             AmountPaid = estimatedPrice,
-            PaymentStatus = "Pending",
+            PaymentStatus = "Accepted",
             CreatedAt = DateTime.Now
         };
 

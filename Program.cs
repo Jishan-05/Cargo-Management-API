@@ -30,7 +30,6 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-// builder.Services.AddScoped<IContactusRepository, ContactusRepository>();
 builder.Services.AddScoped<IDeliveryRouteRepository, DeliveryRouteRepository>();
 builder.Services.AddScoped<IPricingRepository, PricingRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
@@ -39,6 +38,8 @@ builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddScoped<IParcelRepository, ParcelRepository>();
 builder.Services.AddScoped<IContactUsRepository, ContactUsRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+// builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+
 
 
 // services
@@ -52,6 +53,7 @@ builder.Services.AddScoped<PricingService>();
 builder.Services.AddScoped<DeliveryRouteService>();
 builder.Services.AddScoped<IContactUsService, ContactUsService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+// builder.Services.AddScoped<InvoiceService>();
 
 // Add JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
