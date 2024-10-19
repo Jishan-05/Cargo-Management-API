@@ -1,6 +1,8 @@
 using CargoManagementSystem.Data;
 using CargoManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class ParcelRepository : IParcelRepository
 {
@@ -11,13 +13,19 @@ public class ParcelRepository : IParcelRepository
         _context = context;
     }
 
+    public async Task<IEnumerable<Parcel>> GetAllParcelsAsync()
+    {
+        return await _context.Parcels
+            .Include(p => p.Customer)     // Include Customer
+            .ThenInclude(c => c.User)     // Include User data (first name, last name)
+            .ToListAsync();
+    }
+
     public async Task<Parcel> GetParcelByIdAsync(int id)
-{
-    var parcel = await _context.Parcels.FirstOrDefaultAsync(p => p.Id == id);
-    return parcel;  // This returns a single Parcel
-}
-
-
-
-    // Other methods
+    {
+        return await _context.Parcels
+            .Include(p => p.Customer)     // Include Customer
+            .ThenInclude(c => c.User)     // Include User data
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
 }

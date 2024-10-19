@@ -53,7 +53,7 @@ builder.Services.AddScoped<PricingService>();
 builder.Services.AddScoped<DeliveryRouteService>();
 builder.Services.AddScoped<IContactUsService, ContactUsService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
-// builder.Services.AddScoped<InvoiceService>();
+builder.Services.AddScoped<ParcelService>();
 
 // Add JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
