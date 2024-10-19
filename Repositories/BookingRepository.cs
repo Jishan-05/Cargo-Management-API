@@ -35,4 +35,6 @@ public class BookingRepository : IBookingRepository
             .Include(b => b.Parcel)
             .FirstOrDefaultAsync(b => b.Id == bookingId);
     }
+
+   
 }

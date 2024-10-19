@@ -7,4 +7,5 @@ public interface IBookingRepository
     Task<IEnumerable<Booking>> GetBookingsAsync();
     Task<Booking> AddBookingAsync(Booking booking);
     Task<Booking> GetBookingByIdAsync(int bookingId);
+    
 }

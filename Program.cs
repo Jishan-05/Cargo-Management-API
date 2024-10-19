@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+using System;
 using System.Collections.Immutable;
 using System.Text;
 using CargoManagementSystem.Data;
@@ -26,7 +28,7 @@ builder.Services.AddControllersWithViews()
 );
 
 // repositories
-// builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
@@ -38,6 +40,8 @@ builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddScoped<IParcelRepository, ParcelRepository>();
 builder.Services.AddScoped<IContactUsRepository, ContactUsRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+
 // builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 
 
@@ -54,6 +58,7 @@ builder.Services.AddScoped<DeliveryRouteService>();
 builder.Services.AddScoped<IContactUsService, ContactUsService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<ParcelService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
 // Add JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
