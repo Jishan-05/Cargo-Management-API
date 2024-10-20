@@ -28,13 +28,16 @@ public class BookingRepository : IBookingRepository
         return booking;
     }
 
-    public async Task<Booking> GetBookingByIdAsync(int bookingId)
+    public async Task<Booking> GetBookingByIdAsync(int id)
     {
-        return await _context.Bookings
-            .Include(b => b.Customer)
-            .Include(b => b.Parcel)
-            .FirstOrDefaultAsync(b => b.Id == bookingId);
+        return await _context.Bookings.Include(b => b.Customer).ThenInclude(c => c.User)
+                                    .Include(b => b.Parcel).ThenInclude(p => p.FromCity)
+                                    .Include(b => b.Parcel).ThenInclude(p => p.ToCity)
+                                    .FirstOrDefaultAsync(b => b.Id == id);
     }
+
+
+    
 
    
 }

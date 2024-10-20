@@ -41,10 +41,7 @@ builder.Services.AddScoped<IParcelRepository, ParcelRepository>();
 builder.Services.AddScoped<IContactUsRepository, ContactUsRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
-
-// builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
-
-
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 
 // services
 builder.Services.AddScoped<IAdminService, AdminService>();
@@ -59,6 +56,10 @@ builder.Services.AddScoped<IContactUsService, ContactUsService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<ParcelService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();    
+// builder.Services.AddScoped<InvoicePdfService>();
+
+
 
 // Add JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
