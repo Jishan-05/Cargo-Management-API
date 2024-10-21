@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+
 namespace CargoManagementSystem.Controllers
 {
     [ApiController]
@@ -30,6 +31,8 @@ namespace CargoManagementSystem.Controllers
             return Content(htmlContent, "text/html"); // Return HTML content with the correct content type
         }
 
+        
+        
         [HttpGet]
         public async Task<IActionResult> GetAllInvoices()
         {

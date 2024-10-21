@@ -1,12 +1,12 @@
-using System.IO;
-using System.Threading.Tasks;
 using CargoManagementSystem.Models;
-using CargoManagementSystem.Extensions;
+// using CargoManagementSystem.Extensions;
 using CargoManagementSystem.Repositories;
 using CargoManagementSystem.DTOs;
-using PdfSharpCore.Pdf; // Ensure PdfSharpCore namespace is used
-using TheArtOfDev.HtmlRenderer.PdfSharp; // Use the correct namespace for HtmlRenderer
-
+using PdfSharpCore;
+using PdfSharpCore.Pdf;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
+using System.IO;
+using System.Threading.Tasks;
 // Import your extension method
 
 namespace CargoManagementSystem.Services
@@ -32,12 +32,20 @@ namespace CargoManagementSystem.Services
                 return null; // Handle not found
             }
 
+            // Check if an invoice already exists for this booking
+            var existingInvoice = await _invoiceRepository.GetInvoiceByIdAsync(bookingId);
+            if (existingInvoice != null)
+            {
+                return "Invoice already exists for this booking."; // Validation message
+            }
+
+            // Create a new invoice since it doesn't exist
             var invoice = new Invoice
             {
                 CustmerName = $"{booking.Customer.User.FirstName} {booking.Customer.User.LastName}",
                 Description = $"{booking.Parcel.FromCity.Name} to {booking.Parcel.ToCity.Name}",
                 Price = booking.Parcel.Price.HasValue ? booking.Parcel.Price.Value.ToString("F2") : "0.00",
-                CreatedOn = DateOnly.FromDateTime(DateTime.Now), // Use DateOnly here
+                CreatedOn = DateOnly.FromDateTime(DateTime.Now),
                 BookingId = booking.Id
             };
 
@@ -109,6 +117,9 @@ namespace CargoManagementSystem.Services
 
             return htmlContent; // Return the generated HTML invoice
         }
+
+        
+
 
         public async Task<IEnumerable<InvoiceDto>> GetAllInvoicesAsync()
         {

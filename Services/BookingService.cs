@@ -18,38 +18,6 @@ public class BookingService : IBookingService
         _context = context;
     }
 
-    // public async Task<IEnumerable<BookingListDto>> GetBookingsAsync()
-    // {
-    //     var bookings = await _bookingRepository.GetBookingsAsync();
-        
-    //     foreach (var booking in bookings)
-    //     {
-    //         if (booking.Customer == null)
-    //         {
-    //             Console.WriteLine("Customer is null for booking ID: " + booking.Id);
-    //         }
-    //         else if (booking.Customer.User == null)
-    //         {
-    //             Console.WriteLine("User is null for customer ID: " + booking.Customer.Id);
-    //         }
-    //         else
-    //         {
-    //             Console.WriteLine($"Customer: {booking.Customer.User.FirstName} {booking.Customer.User.LastName}");
-    //         }
-    //     }
-        
-    //     return bookings.Select(b => new BookingListDto
-    //     {
-    //         Id = b.Id,
-    //         CustomerName = (b.Customer?.User?.FirstName ?? "") + " " + (b.Customer?.User?.LastName ?? ""),
-    //         ParcelType = b.Parcel?.ParcelType ?? "Unknown",
-    //         BookingDate = b.BookingDate ?? DateTime.Now,
-    //         AmountPaid = b.AmountPaid ?? 0,
-    //         PaymentStatus = b.PaymentStatus,
-    //         ParcelStatus = b.Parcel?.Status ?? "Unknown"
-    //     });
-    // }
-
     public async Task<IEnumerable<BookingListDto>> GetBookingsAsync()
     {
         // Fetch the bookings, including related Customer and User entities
@@ -136,32 +104,6 @@ public class BookingService : IBookingService
 
         return booked;
     }
-
-    // public async Task<decimal> CalculateEstimateAsync(int pickCityId, int deliverCityId, string parcelType)
-    // {
-    //     var pickCity = await _context.Cities.FindAsync(pickCityId);
-    //     var deliverCity = await _context.Cities.FindAsync(deliverCityId);
-
-    //     if (pickCity == null || deliverCity == null) throw new Exception("Invalid city selected.");
-
-    //     var pricing = await _context.Pricings.OrderByDescending(p => p.CreatedAt).FirstOrDefaultAsync();
-    //     if (pricing == null) throw new Exception("Pricing details not available.");
-
-    //     decimal basePrice = (decimal)(pricing.BasePrice ?? 0);
-    //     decimal pricePerKm = (decimal)(pricing.PricePerKm ?? 0);
-
-    //     var route = await _context.Deliveryroutes
-    //         .FirstOrDefaultAsync(r => r.FromCityId == pickCityId && r.ToCityId == deliverCityId);
-
-    //     if (route == null) throw new Exception("No delivery route found.");
-
-    //     decimal estimatedPrice = (decimal)(basePrice + (pricePerKm * route.DistanceKm));
-
-    //     if (parcelType == "medium") estimatedPrice *= 2;
-    //     if (parcelType == "large") estimatedPrice *= 4;
-
-    //     return estimatedPrice;
-    // }
 
     public async Task<decimal> CalculateEstimateAsync(string pickCityName, string deliverCityName, string parcelType)
     {

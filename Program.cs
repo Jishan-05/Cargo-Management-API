@@ -18,14 +18,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("cmcs")));
+
+
+
     
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllersWithViews()
-    .AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
 
 // repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -42,6 +41,9 @@ builder.Services.AddScoped<IContactUsRepository, ContactUsRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+
+
 
 // services
 builder.Services.AddScoped<IAdminService, AdminService>();
@@ -56,8 +58,9 @@ builder.Services.AddScoped<IContactUsService, ContactUsService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<ParcelService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
-builder.Services.AddScoped<IInvoiceService, InvoiceService>();    
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();  
 // builder.Services.AddScoped<InvoicePdfService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 
 

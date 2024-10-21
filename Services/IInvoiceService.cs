@@ -1,4 +1,5 @@
 using CargoManagementSystem.DTOs;
+using CargoManagementSystem.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 namespace CargoManagementSystem.Services
