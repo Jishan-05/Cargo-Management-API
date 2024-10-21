@@ -1,9 +1,7 @@
 using CargoManagementSystem.Models;
-// using CargoManagementSystem.Extensions;
+using CargoManagementSystem.Extensions;
 using CargoManagementSystem.Repositories;
 using CargoManagementSystem.DTOs;
-using PdfSharpCore;
-using PdfSharpCore.Pdf;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using System.IO;
 using System.Threading.Tasks;

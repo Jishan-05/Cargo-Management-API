@@ -43,6 +43,22 @@ public class BookingController : ControllerBase
         }
     }
 
+    [HttpPost("{id}/update-status")]
+    public async Task<IActionResult> UpdateBookingStatus(int id, [FromBody] UpdateStatusDto statusDto)
+    {
+        try
+        {
+            // Assuming user ID is passed in the request (from session, JWT, etc.)
+            int userId = 3; // Replace with the actual logged-in user ID
+            await _bookingService.UpdateBookingStatusAsync(id, statusDto.Status, userId);
+            return Ok(new { message = "Status updated successfully" });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
     [HttpGet("estimate")]
     public async Task<IActionResult> GetEstimate(string pickCityName, string deliverCityName, string parcelType)
     {

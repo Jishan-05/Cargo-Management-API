@@ -42,6 +42,8 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IParcelStatusRepository,ParcelStatusRepository>();
+
 
 
 
@@ -57,6 +59,7 @@ builder.Services.AddScoped<DeliveryRouteService>();
 builder.Services.AddScoped<IContactUsService, ContactUsService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<ParcelService>();
+builder.Services.AddScoped<IParcelStatusService,ParcelStatusService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();  
 // builder.Services.AddScoped<InvoicePdfService>();

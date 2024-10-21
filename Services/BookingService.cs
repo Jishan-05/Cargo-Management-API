@@ -41,6 +41,40 @@ public class BookingService : IBookingService
     }
 
 
+     public async Task UpdateBookingStatusAsync(int bookingId, string status, int userId)
+    {
+        var booking = await _bookingRepository.GetBookingByIdAsync(bookingId);
+        if (booking == null) throw new Exception("Booking not found");
+
+        var parcel = booking.Parcel;
+        parcel.Status = status;
+        parcel.UpdatedAt = DateTime.Now;
+        await _context.SaveChangesAsync();
+
+        // Record status change in ParcelStatus
+        var parcelStatus = new Parcelstatus()
+        {
+            ParcelId = parcel.Id,
+            Status = GetStatusMessage(status, parcel),
+            UpdatedAt = DateTime.Now,
+            UpdateByUserId = userId
+        };
+
+        _context.Parcelstatuses.Add(parcelStatus);
+        await _context.SaveChangesAsync();
+    }
+
+    private string GetStatusMessage(string status, Parcel parcel)
+    {
+        return status switch
+        {
+            "In Transit" => "In Transit",
+            "Arrived" => $"Parcel arrived at {parcel.ToCity.Name}",
+            "Delivered" => $"Parcel delivered from {parcel.ToCity.Name}",
+            _ => "Unknown"
+        };
+    }
+    
     public async Task<Booking> AddBookingAsync(AddBookingDto addBookingDto)
     {
         // Fetch customer by email
@@ -104,6 +138,8 @@ public class BookingService : IBookingService
 
         return booked;
     }
+
+
 
     public async Task<decimal> CalculateEstimateAsync(string pickCityName, string deliverCityName, string parcelType)
     {
