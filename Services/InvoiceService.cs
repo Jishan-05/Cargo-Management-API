@@ -20,187 +20,148 @@ namespace CargoManagementSystem.Services
             _invoiceRepository = invoiceRepository;
             _bookingRepository = bookingRepository;
         }
+public async Task<string> GenerateInvoiceAsync(int bookingId)
+{
+    var booking = await _bookingRepository.GetBookingByIdAsync(bookingId);
+    
+    if (booking == null)
+    {
+        return null; // Handle not found
+    }
 
-        public async Task<string> GenerateInvoiceAsync(int bookingId)
-        {
-            var booking = await _bookingRepository.GetBookingByIdAsync(bookingId);
-            
-            if (booking == null)
-            {
-                return null; // Handle not found
-            }
+    // Check if an invoice already exists for this booking
+    var existingInvoice = await _invoiceRepository.GetInvoiceByIdAsync(bookingId);
+    if (existingInvoice != null)
+    {
+        return "Invoice already exists for this booking."; // Validation message
+    }
 
-            // Check if an invoice already exists for this booking
-            var existingInvoice = await _invoiceRepository.GetInvoiceByIdAsync(bookingId);
-            if (existingInvoice != null)
-            {
-                return "Invoice already exists for this booking."; // Validation message
-            }
+    // Create a new invoice since it doesn't exist
+    var invoice = new Invoice
+    {
+        CustmerName = $"{booking.Customer.User.FirstName} {booking.Customer.User.LastName}",
+        Description = $"{booking.Parcel.FromCity.Name} to {booking.Parcel.ToCity.Name}",
+        Price = booking.Parcel.Price.HasValue ? booking.Parcel.Price.Value.ToString("F2") : "0.00",
+        CreatedOn = DateOnly.FromDateTime(DateTime.Now),
+        BookingId = booking.Id
+    };
 
-            // Create a new invoice since it doesn't exist
-            var invoice = new Invoice
-            {
-                CustmerName = $"{booking.Customer.User.FirstName} {booking.Customer.User.LastName}",
-                Description = $"{booking.Parcel.FromCity.Name} to {booking.Parcel.ToCity.Name}",
-                Price = booking.Parcel.Price.HasValue ? booking.Parcel.Price.Value.ToString("F2") : "0.00",
-                CreatedOn = DateOnly.FromDateTime(DateTime.Now),
-                BookingId = booking.Id
-            };
+    await _invoiceRepository.AddInvoiceAsync(invoice);
 
-            await _invoiceRepository.AddInvoiceAsync(invoice);
-            var htmlContent = $@"
-    <style>
-        body {{
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }}
-        .container {{
-            width: 80%;
-            margin: 20px auto;
-            border: 1px solid #ddd;
-            padding: 20px;
-        }}
-        h1 {{
-            text-align: center;
-            color: #333;
-        }}
-        .header, .footer {{
-            text-align: center;
-        }}
-        .invoice-info, .customer-info {{
-            margin-bottom: 20px;
-        }}
-        .invoice-info table, .customer-info table, .item-list table {{
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }}
-        .invoice-info th, .customer-info th, .item-list th {{
-            background-color: #f4f4f4;
-            text-align: left;
-            padding: 10px;
-        }}
-        .invoice-info td, .customer-info td, .item-list td {{
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }}
-        .item-list th, .item-list td {{
-            border: 1px solid #ddd;
-        }}
-        .total {{
-            text-align: right;
-            font-weight: bold;
-        }}
+    // Plain text output
+    var Invoice = $@"
+    Invoice Number: INV-{invoice.Id}
+    Invoice Date: {invoice.CreatedOn}
+    
+    Customer Information:
+    Name: {invoice.CustmerName}
+    Address: {booking.Customer.Address}
+    Email: {booking.Customer.User.Email}
+    Phone: {booking.Customer.PhoneNumber}
+    
+    Booking Details:
+    From: {booking.Parcel.FromCity.Name}
+    To: {booking.Parcel.ToCity.Name}
+    
+    Description: {invoice.Description}
+    Price: Rs. {invoice.Price}
+
+    Total: Rs.{invoice.Price}
+    ";
+
+    return Invoice; // Return the plain text invoice
+}
         
-    </style>
-    <div class=""container"">
-        <div class=""header"">
-            <h1>Shubh Laxmi Cargo Movers</h1>
-            <h1>Invoice</h1>
-        </div>
-        <div class=""invoice-info"">
-            <table>
-                <tr>
-                    <th>Invoice Number:</th>
-                    <td>INV-{invoice.Id}</td>
-                </tr>
-                <tr>
-                    <th>Invoice Date:</th>
-                    <td>{invoice.CreatedOn}</td>
-                </tr>
-            </table>
-        </div>
-        <div class=""customer-info"">
-            <h2>Customer Information</h2>
-            <table>
-                <tr>
-                    <th>Customer Name:</th>
-                    <td>{invoice.CustmerName}</td>
-                </tr>
-                <tr>
-                    <th>Address:</th>
-                    <td>{booking.Customer.Address}</td>
-                </tr>
-                <tr>
-                    <th>Email:</th>
-                    <td>{booking.Customer.User.Email}</td>
-                </tr>
-                <tr>
-                    <th>Phone:</th>
-                    <td>{booking.Customer.PhoneNumber}</td>
-                </tr>
-            </table>
-        </div>
-        <div class=""item-list"">
-            <h2>Invoice Items</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{invoice.Description}</td>
-                        <td>&#8377; {invoice.Price}</td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan=""1"" class=""total"">Total:</td>
-                        <td>&#8377; {invoice.Price}</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-    </div>";
-            return htmlContent; // Return the generated HTML invoice
-        }
+public async Task<IEnumerable<InvoiceDto>> GetAllInvoicesAsync()
+{
+    var invoices = await _invoiceRepository.GetAllInvoicesAsync();
+    var invoiceDtos = new List<InvoiceDto>();
 
+    foreach (var invoice in invoices)
+    {
+        var booking = await _bookingRepository.GetBookingByIdAsync(invoice.BookingId);
+
+        // Build the plain text invoice
+        var Invoice = $@"
+        Invoice Number: INV-{invoice.Id}
+        Invoice Date: {invoice.CreatedOn.ToDateTime(TimeOnly.MinValue):MM/dd/yyyy}
         
-
-
-        public async Task<IEnumerable<InvoiceDto>> GetAllInvoicesAsync()
-        {
-            var invoices = await _invoiceRepository.GetAllInvoicesAsync();
-            return invoices.Select(invoice => new InvoiceDto
-            {
-                Id = invoice.Id,
-                CustomerName = invoice.CustmerName, // Fixed typo here
-                Description = invoice.Description,
-                Price = invoice.Price, // Ensure Price is decimal
-                CreatedOn = invoice.CreatedOn.ToDateTime(TimeOnly.MinValue), // Convert DateOnly to DateTime
-                BookingId = invoice.BookingId,
-                Booking = new BookingListDto // Mapping Booking to DTO
-                {
-                    // Fill booking details here
-                }
-            });
-        }
-
-        public async Task<InvoiceDto> GetInvoiceByIdAsync(int id)
-        {
-            var invoice = await _invoiceRepository.GetInvoiceByIdAsync(id);
-            if (invoice == null)
-            {
-                return null; // Handle not found
-            }
-
-            return new InvoiceDto
-            {
-                Id = invoice.Id,
-                CustomerName = invoice.CustmerName, // Fixed typo here
-                Description = invoice.Description,
-                Price = invoice.Price, // Ensure Price is decimal
-                CreatedOn = invoice.CreatedOn.ToDateTime(TimeOnly.MinValue), // Convert DateOnly to DateTime
-                BookingId = invoice.BookingId,
-                Booking = new BookingListDto() // Mapping Booking to DTO
-            };
-        }
-
+        Customer Information:
+        Name: {invoice.CustmerName}
+        Address: {booking.Customer.Address}
+        Email: {booking.Customer.User.Email}
+        Phone: {booking.Customer.PhoneNumber}
         
+        Booking Details:
+        From: {booking.Parcel.FromCity.Name}
+        To: {booking.Parcel.ToCity.Name}
+        
+        Description: {invoice.Description}
+        Price: Rs. {invoice.Price}
+
+        Total: Rs.{invoice.Price}
+        ";
+
+        // Create the InvoiceDto object
+        invoiceDtos.Add(new InvoiceDto
+        {
+            Id = invoice.Id,
+            CustomerName = invoice.CustmerName,
+            Description = invoice.Description,
+            Price = invoice.Price,
+            CreatedOn = invoice.CreatedOn.ToDateTime(TimeOnly.MinValue),
+            BookingId = invoice.BookingId,
+            Invoice = Invoice
+        });
+    }
+
+    return invoiceDtos;
+}
+
+ public async Task<InvoiceDto> GetInvoiceByIdAsync(int id)
+{
+    var invoice = await _invoiceRepository.GetInvoiceByIdAsync(id);
+    
+    if (invoice == null)
+    {
+        return null; // Handle not found
+    }
+
+    var booking = await _bookingRepository.GetBookingByIdAsync(invoice.BookingId);
+
+    // Build the plain text invoice
+    var Invoice = $@"
+    Invoice Number: INV-{invoice.Id}
+    Invoice Date: {invoice.CreatedOn.ToDateTime(TimeOnly.MinValue):MM/dd/yyyy}
+    
+    Customer Information:
+    Name: {invoice.CustmerName}
+    Address: {booking.Customer.Address}
+    Email: {booking.Customer.User.Email}
+    Phone: {booking.Customer.PhoneNumber}
+    
+    Booking Details:
+    From: {booking.Parcel.FromCity.Name}
+    To: {booking.Parcel.ToCity.Name}
+    
+    Description: {invoice.Description}
+    Price: Rs. {invoice.Price}
+
+    Total: Rs.{invoice.Price}
+    ";
+
+    return new InvoiceDto
+    {
+        Id = invoice.Id,
+        CustomerName = invoice.CustmerName,
+        Description = invoice.Description,
+        Price = invoice.Price,
+        CreatedOn = invoice.CreatedOn.ToDateTime(TimeOnly.MinValue),
+        BookingId = invoice.BookingId,
+        Invoice = Invoice // Set the plain text invoice
+    };
+}
+ 
 
        
     }

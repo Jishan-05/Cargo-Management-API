@@ -1,5 +1,3 @@
-using CargoManagementSystem.DTOs;
-
 namespace CargoManagementSystem.DTOs
 {
     public class InvoiceDto
@@ -10,7 +8,6 @@ namespace CargoManagementSystem.DTOs
         public string? Price { get; set; }
         public DateTime CreatedOn { get; set; }
         public int BookingId { get; set; }
-        public BookingListDto Booking { get; set; } = null!;
+        public string Invoice { get; set; } // Plain text invoice format
     }
-    
 }
