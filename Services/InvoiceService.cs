@@ -48,71 +48,114 @@ namespace CargoManagementSystem.Services
             };
 
             await _invoiceRepository.AddInvoiceAsync(invoice);
-
             var htmlContent = $@"
-                <div class=""container"">
-                    <div class=""header"">
-                        <h1>Shubh Laxmi Cargo Movers</h1>
-                        <h1>Invoice</h1>
-                    </div>
-                    <div class=""invoice-info"">
-                        <table>
-                            <tr>
-                                <th>Invoice Number:</th>
-                                <td>INV-{invoice.Id}</td>
-                            </tr>
-                            <tr>
-                                <th>Invoice Date:</th>
-                                <td>{invoice.CreatedOn}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class=""customer-info"">
-                        <h2>Customer Information</h2>
-                        <table>
-                            <tr>
-                                <th>Customer Name:</th>
-                                <td>{invoice.CustmerName}</td>
-                            </tr>
-                            <tr>
-                                <th>Address:</th>
-                                <td>{booking.Customer.Address}</td>
-                            </tr>
-                            <tr>
-                                <th>Email:</th>
-                                <td>{booking.Customer.User.Email}</td>
-                            </tr>
-                            <tr>
-                                <th>Phone:</th>
-                                <td>{booking.Customer.PhoneNumber}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class=""item-list"">
-                        <h2>Invoice Items</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{invoice.Description}</td>
-                                    <td>&#8377; {invoice.Price}</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan=""1"" class=""total"">Total:</td>
-                                    <td>&#8377; {invoice.Price}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>";
-
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }}
+        .container {{
+            width: 80%;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }}
+        h1 {{
+            text-align: center;
+            color: #333;
+        }}
+        .header, .footer {{
+            text-align: center;
+        }}
+        .invoice-info, .customer-info {{
+            margin-bottom: 20px;
+        }}
+        .invoice-info table, .customer-info table, .item-list table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }}
+        .invoice-info th, .customer-info th, .item-list th {{
+            background-color: #f4f4f4;
+            text-align: left;
+            padding: 10px;
+        }}
+        .invoice-info td, .customer-info td, .item-list td {{
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }}
+        .item-list th, .item-list td {{
+            border: 1px solid #ddd;
+        }}
+        .total {{
+            text-align: right;
+            font-weight: bold;
+        }}
+        
+    </style>
+    <div class=""container"">
+        <div class=""header"">
+            <h1>Shubh Laxmi Cargo Movers</h1>
+            <h1>Invoice</h1>
+        </div>
+        <div class=""invoice-info"">
+            <table>
+                <tr>
+                    <th>Invoice Number:</th>
+                    <td>INV-{invoice.Id}</td>
+                </tr>
+                <tr>
+                    <th>Invoice Date:</th>
+                    <td>{invoice.CreatedOn}</td>
+                </tr>
+            </table>
+        </div>
+        <div class=""customer-info"">
+            <h2>Customer Information</h2>
+            <table>
+                <tr>
+                    <th>Customer Name:</th>
+                    <td>{invoice.CustmerName}</td>
+                </tr>
+                <tr>
+                    <th>Address:</th>
+                    <td>{booking.Customer.Address}</td>
+                </tr>
+                <tr>
+                    <th>Email:</th>
+                    <td>{booking.Customer.User.Email}</td>
+                </tr>
+                <tr>
+                    <th>Phone:</th>
+                    <td>{booking.Customer.PhoneNumber}</td>
+                </tr>
+            </table>
+        </div>
+        <div class=""item-list"">
+            <h2>Invoice Items</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{invoice.Description}</td>
+                        <td>&#8377; {invoice.Price}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan=""1"" class=""total"">Total:</td>
+                        <td>&#8377; {invoice.Price}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>";
             return htmlContent; // Return the generated HTML invoice
         }
 

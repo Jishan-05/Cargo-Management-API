@@ -46,7 +46,7 @@
           }
         }
       },
-      "HtmlRenderer.Core/1.5.0.5": {
+      "HtmlRenderer.Core/1.5.0": {
         "type": "package",
         "compile": {
           "lib/net45/HtmlRenderer.dll": {
@@ -59,11 +59,10 @@
           }
         }
       },
-      "HtmlRenderer.PdfSharp/1.5.0.6": {
+      "HtmlRenderer.PdfSharp/1.5.0": {
         "type": "package",
         "dependencies": {
-          "HtmlRenderer.Core": "1.5.0.5",
-          "PDFsharp": "1.32.3057"
+          "HtmlRenderer.Core": "1.5.0"
         },
         "compile": {
           "lib/net45/HtmlRenderer.PdfSharp.dll": {
@@ -2029,6 +2028,25 @@
           }
         }
       },
+      "PdfSharpCore/1.3.65": {
+        "type": "package",
+        "dependencies": {
+          "SharpZipLib": "1.4.2",
+          "SixLabors.Fonts": "1.0.0-beta17",
+          "SixLabors.ImageSharp": "1.0.4"
+        },
+        "compile": {
+          "lib/net8.0/PdfSharpCore.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/PdfSharpCore.dll": {}
+        },
+        "resource": {
+          "lib/net8.0/de/PdfSharpCore.resources.dll": {
+            "locale": "de"
+          }
+        }
+      },
       "QuestPDF/2024.10.1": {
         "type": "package",
         "compile": {
@@ -2243,6 +2261,45 @@
           "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "ubuntu.16.10-x64"
+          }
+        }
+      },
+      "SharpZipLib/1.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/ICSharpCode.SharpZipLib.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/ICSharpCode.SharpZipLib.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
+      "SixLabors.Fonts/1.0.0-beta17": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.1/SixLabors.Fonts.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/SixLabors.Fonts.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "SixLabors.ImageSharp/1.0.4": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.1/SixLabors.ImageSharp.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/SixLabors.ImageSharp.dll": {
+            "related": ".xml"
           }
         }
       },
@@ -3940,14 +3997,14 @@
         "lib/netstandard2.0/Azure.Identity.xml"
       ]
     },
-    "HtmlRenderer.Core/1.5.0.5": {
-      "sha512": "QfZkSOb8HomRkKW3EAjT/VT48x6q+bgK4IBA9gFF+5FVTbvmMEIm42NsXEx/LTBHMssnQTPe94X0Bi8KdUIVQA==",
+    "HtmlRenderer.Core/1.5.0": {
+      "sha512": "el1/jMhZg6+n5L8pIgRLdXgZLfFoaA4bUr4YpG6fDenRZOZvtAruyQzrh4p3921tfyLdzM5gNfDxEctV2Ws3qw==",
       "type": "package",
-      "path": "htmlrenderer.core/1.5.0.5",
+      "path": "htmlrenderer.core/1.5.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "htmlrenderer.core.1.5.0.5.nupkg.sha512",
+        "htmlrenderer.core.1.5.0.nupkg.sha512",
         "htmlrenderer.core.nuspec",
         "lib/net20/HtmlRenderer.dll",
         "lib/net20/HtmlRenderer.pdb",
@@ -3961,14 +4018,14 @@
         "lib/net45/HtmlRenderer.pdb"
       ]
     },
-    "HtmlRenderer.PdfSharp/1.5.0.6": {
-      "sha512": "uk2lzFa/0zQSk8im2CX8ROXlqy8YAJUG28b5/G8wa0YNdO6+04bEl3iZCaThkcyNWnnIsHCn5hWR3vZjc6JhmA==",
+    "HtmlRenderer.PdfSharp/1.5.0": {
+      "sha512": "2d+QpRhQRv9w7biewz345gX7dZuK5MO3XJ0ayuP2jMiNtShVYHDIiS+KyUrO0Wp0x+aumXzAbO1QToTRSiCvwA==",
       "type": "package",
-      "path": "htmlrenderer.pdfsharp/1.5.0.6",
+      "path": "htmlrenderer.pdfsharp/1.5.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "htmlrenderer.pdfsharp.1.5.0.6.nupkg.sha512",
+        "htmlrenderer.pdfsharp.1.5.0.nupkg.sha512",
         "htmlrenderer.pdfsharp.nuspec",
         "lib/net20/HtmlRenderer.PdfSharp.dll",
         "lib/net20/HtmlRenderer.PdfSharp.pdb",
@@ -6521,6 +6578,31 @@
         "pdfsharp.nuspec"
       ]
     },
+    "PdfSharpCore/1.3.65": {
+      "sha512": "mkN1EZ1VtH4+x97DEvmno5goRU3j4myuWD7IxO9MuxRcc1iOcUfhq75RmxZSAH9dQCZhpGpLUJSkwlRRnzElAg==",
+      "type": "package",
+      "path": "pdfsharpcore/1.3.65",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "README.md",
+        "lib/net5.0/PdfSharpCore.dll",
+        "lib/net5.0/de/PdfSharpCore.resources.dll",
+        "lib/net6.0/PdfSharpCore.dll",
+        "lib/net6.0/de/PdfSharpCore.resources.dll",
+        "lib/net7.0/PdfSharpCore.dll",
+        "lib/net7.0/de/PdfSharpCore.resources.dll",
+        "lib/net8.0/PdfSharpCore.dll",
+        "lib/net8.0/de/PdfSharpCore.resources.dll",
+        "lib/netcoreapp3.1/PdfSharpCore.dll",
+        "lib/netcoreapp3.1/de/PdfSharpCore.resources.dll",
+        "lib/netstandard2.0/PdfSharpCore.dll",
+        "lib/netstandard2.0/de/PdfSharpCore.resources.dll",
+        "pdfsharpcore.1.3.65.nupkg.sha512",
+        "pdfsharpcore.nuspec"
+      ]
+    },
     "QuestPDF/2024.10.1": {
       "sha512": "pjPmQ/K5yI9EDuLceHa+HTPYMLAN0Lgpfmhsf4SxNhkU/nJ3Qc9k2d9wSg+1DNrub6hh2uJZx5xOk2jN6CNlew==",
       "type": "package",
@@ -6809,6 +6891,69 @@
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.nuspec",
         "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so"
+      ]
+    },
+    "SharpZipLib/1.4.2": {
+      "sha512": "yjj+3zgz8zgXpiiC3ZdF/iyTBbz2fFvMxZFEBPUcwZjIvXOf37Ylm+K58hqMfIBt5JgU/Z2uoUS67JmTLe973A==",
+      "type": "package",
+      "path": "sharpziplib/1.4.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "images/sharpziplib-nuget-256x256.png",
+        "lib/net6.0/ICSharpCode.SharpZipLib.dll",
+        "lib/net6.0/ICSharpCode.SharpZipLib.pdb",
+        "lib/net6.0/ICSharpCode.SharpZipLib.xml",
+        "lib/netstandard2.0/ICSharpCode.SharpZipLib.dll",
+        "lib/netstandard2.0/ICSharpCode.SharpZipLib.pdb",
+        "lib/netstandard2.0/ICSharpCode.SharpZipLib.xml",
+        "lib/netstandard2.1/ICSharpCode.SharpZipLib.dll",
+        "lib/netstandard2.1/ICSharpCode.SharpZipLib.pdb",
+        "lib/netstandard2.1/ICSharpCode.SharpZipLib.xml",
+        "sharpziplib.1.4.2.nupkg.sha512",
+        "sharpziplib.nuspec"
+      ]
+    },
+    "SixLabors.Fonts/1.0.0-beta17": {
+      "sha512": "qubgVovAoSR7vyv9tJ68gSzRIPWz7HBjTM9rwAaLjpcJ6T50arnX+GHAZcC0r2mVagyRMknCNda3DGoe8StUUQ==",
+      "type": "package",
+      "path": "sixlabors.fonts/1.0.0-beta17",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netcoreapp3.1/SixLabors.Fonts.dll",
+        "lib/netcoreapp3.1/SixLabors.Fonts.xml",
+        "lib/netstandard2.0/SixLabors.Fonts.dll",
+        "lib/netstandard2.0/SixLabors.Fonts.xml",
+        "lib/netstandard2.1/SixLabors.Fonts.dll",
+        "lib/netstandard2.1/SixLabors.Fonts.xml",
+        "sixlabors.fonts.1.0.0-beta17.nupkg.sha512",
+        "sixlabors.fonts.128.png",
+        "sixlabors.fonts.nuspec"
+      ]
+    },
+    "SixLabors.ImageSharp/1.0.4": {
+      "sha512": "H2rPiEr2ddBOltOuqRYhpLBAsQXDAhbzMMhhuksnBG2oefup1MXMchALe7yYkKJksNbtxbZHKeM6dn/68I75qw==",
+      "type": "package",
+      "path": "sixlabors.imagesharp/1.0.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net472/SixLabors.ImageSharp.dll",
+        "lib/net472/SixLabors.ImageSharp.xml",
+        "lib/netcoreapp2.1/SixLabors.ImageSharp.dll",
+        "lib/netcoreapp2.1/SixLabors.ImageSharp.xml",
+        "lib/netcoreapp3.1/SixLabors.ImageSharp.dll",
+        "lib/netcoreapp3.1/SixLabors.ImageSharp.xml",
+        "lib/netstandard1.3/SixLabors.ImageSharp.dll",
+        "lib/netstandard1.3/SixLabors.ImageSharp.xml",
+        "lib/netstandard2.0/SixLabors.ImageSharp.dll",
+        "lib/netstandard2.0/SixLabors.ImageSharp.xml",
+        "lib/netstandard2.1/SixLabors.ImageSharp.dll",
+        "lib/netstandard2.1/SixLabors.ImageSharp.xml",
+        "sixlabors.imagesharp.1.0.4.nupkg.sha512",
+        "sixlabors.imagesharp.128.png",
+        "sixlabors.imagesharp.nuspec"
       ]
     },
     "Swashbuckle.AspNetCore/6.4.0": {
@@ -10905,7 +11050,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "HtmlRenderer.PdfSharp >= 1.5.0.6",
+      "HtmlRenderer.PdfSharp >= 1.5.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 8.0.10",
       "Microsoft.AspNetCore.Mvc >= 2.2.0",
       "Microsoft.EntityFrameworkCore >= 8.0.10",
@@ -10913,6 +11058,7 @@
       "Microsoft.EntityFrameworkCore.SqlServer >= 8.0.10",
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.10",
       "PdfSharp >= 6.1.1",
+      "PdfSharpCore >= 1.3.65",
       "QuestPDF >= 2024.10.1",
       "Swashbuckle.AspNetCore >= 6.4.0",
       "System.IdentityModel.Tokens.Jwt >= 8.1.2"
@@ -10965,7 +11111,7 @@
         "dependencies": {
           "HtmlRenderer.PdfSharp": {
             "target": "Package",
-            "version": "[1.5.0.6, )"
+            "version": "[1.5.0, )"
           },
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
             "target": "Package",
@@ -10998,6 +11144,10 @@
           "PdfSharp": {
             "target": "Package",
             "version": "[6.1.1, )"
+          },
+          "PdfSharpCore": {
+            "target": "Package",
+            "version": "[1.3.65, )"
           },
           "QuestPDF": {
             "target": "Package",
@@ -11040,7 +11190,7 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Package 'HtmlRenderer.Core 1.5.0.5' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "message": "Package 'HtmlRenderer.Core 1.5.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
       "libraryId": "HtmlRenderer.Core",
       "targetGraphs": [
         "net8.0"
@@ -11050,7 +11200,7 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Package 'HtmlRenderer.PdfSharp 1.5.0.6' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "message": "Package 'HtmlRenderer.PdfSharp 1.5.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
       "libraryId": "HtmlRenderer.PdfSharp",
       "targetGraphs": [
         "net8.0"
