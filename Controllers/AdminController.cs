@@ -52,6 +52,8 @@ public class AdminController : ControllerBase
         return Ok(new { Token = token });
     }
 
+
+
     private string GenerateJwtToken(User user)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");

@@ -43,7 +43,7 @@ public class BookingController : ControllerBase
         }
     }
 
-    [HttpPost("{id}/update-status")]
+    [HttpPut("{id}/update-status")]
     public async Task<IActionResult> UpdateBookingStatus(int id, [FromBody] UpdateStatusDto statusDto)
     {
         try

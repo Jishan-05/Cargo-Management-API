@@ -1,4 +1,4 @@
-using CargoManagementSystem.Data; // Assuming you have a Data folder with DbContext
+using CargoManagementSystem.Data;
 using CargoManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;

@@ -6,5 +6,5 @@ namespace CargoManagementSystem.DTOs
         public int? CreatedBy { get; set; }
         public string? FeedbackText { get; set; }
         public DateTime? CreatedAt { get; set; }
-    }
+    } 
 }
