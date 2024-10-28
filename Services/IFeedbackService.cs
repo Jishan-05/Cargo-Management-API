@@ -8,5 +8,7 @@ namespace CargoManagementSystem.Services
     {
         Task<IEnumerable<FeedbackDto>> GetAllFeedbacksAsync();
         Task<FeedbackDto> GetFeedbackByIdAsync(int id);
+        Task AddFeedbackAsync(int customerId, CreateFeedbackDto feedbackDto);
+
     }
 }

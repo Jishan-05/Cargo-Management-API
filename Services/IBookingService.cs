@@ -7,5 +7,6 @@ public interface IBookingService
     Task<Booking> AddBookingAsync(AddBookingDto addBookingDto);
     Task UpdateBookingStatusAsync(int bookingId, string status, int userId);
     Task<decimal> CalculateEstimateAsync(string pickCityName, string deliverCityName, string parcelType);
-    
+    Task<IEnumerable<MyBookingDto>> GetCustomerBookingsAsync(int customerId);
+
 }

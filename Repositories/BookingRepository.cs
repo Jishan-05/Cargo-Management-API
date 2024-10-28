@@ -37,6 +37,14 @@ public class BookingRepository : IBookingRepository
     }
 
 
+     public async Task<IEnumerable<Booking>> GetBookingsByCustomerIdAsync(int customerId)
+    {
+        return await _context.Bookings
+            .Include(b => b.Parcel) // Include related Parcel data
+            .Where(b => b.CustomerId == customerId)
+            .ToListAsync();
+    }
+
     
 
    

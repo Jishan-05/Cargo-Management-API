@@ -48,6 +48,17 @@ namespace CargoManagementSystem.Services
             };
         }
 
+    
+
+        // public async Task<FeedbackDto> AddFeedbackAsync(int customerId, CreateFeedbackDto feedbackDto)
+        // {
+        //     return await AddFeedbackAsync(customerId, feedbackDto);
+        // }
+
+        public async Task AddFeedbackAsync(int customerId, CreateFeedbackDto feedbackDto)
+        {
+            await _feedbackRepository.AddFeedbackAsync(customerId, feedbackDto);
+        }
         
     }
 }

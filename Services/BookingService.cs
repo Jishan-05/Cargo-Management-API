@@ -1,3 +1,4 @@
+using System;
 using CargoManagementSystem.DTOs;
 using CargoManagementSystem.Data;
 using CargoManagementSystem.Models;
@@ -187,6 +188,22 @@ public class BookingService : IBookingService
         }
 
         return estimatedPrice;
+    }
+
+    public async Task<IEnumerable<MyBookingDto>> GetCustomerBookingsAsync(int customerId)
+    {
+        var bookings = await _bookingRepository.GetBookingsByCustomerIdAsync(customerId);
+
+        return bookings.Select(b => new MyBookingDto
+        {
+            TrackingId = b.Parcel.TrackingId,
+            ParcelType = b.Parcel.ParcelType,
+            AmountPaid = (Decimal)(b.PaymentStatus != "Pending" ? b.AmountPaid : 0),
+            PaymentStatus = b.PaymentStatus,
+            Status = b.Parcel.Status,
+            BookingDate = b.PaymentStatus != "Pending" ? b.BookingDate : null,
+            Id = b.Id
+        }).ToList();
     }
 
 

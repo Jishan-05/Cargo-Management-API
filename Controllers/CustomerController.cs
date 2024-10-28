@@ -74,46 +74,100 @@ public class CustomerController : ControllerBase
     }
 
 
+    // [HttpPost("login")]
+    // public IActionResult Login([FromBody] LoginDto loginDto)
+    // {
+    //     var user = _context.Users.FirstOrDefault(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
+    //     if (user == null)
+    //     {
+    //         return Unauthorized("Invalid credentials.");
+    //     }
+
+        
+    //     // Generate JWT token
+    //     var token = GenerateJwtToken(user);
+
+    //     return Ok(new { Token = token });
+    // }
+
+    // private string GenerateJwtToken(User user)
+    // {
+    //     var jwtSettings = _configuration.GetSection("JwtSettings");
+    //     var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]));
+    //     var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
+    //     var claims = new List<Claim>
+    //     {
+    //         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+    //         new Claim(ClaimTypes.Name, user.Username),
+    //         new Claim(ClaimTypes.Role, user.Role)
+    //     };
+
+    //     var tokenOptions = new JwtSecurityToken(
+    //         issuer: jwtSettings["Issuer"],
+    //         audience: jwtSettings["Audience"],
+    //         claims: claims,
+    //         expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["ExpiryMinutes"])),
+    //         signingCredentials: signinCredentials
+    //     );
+
+    //     var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+    //     return tokenString;
+    // }
+
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginDto loginDto)
+public IActionResult Login([FromBody] LoginDto loginDto)
+{
+    var user = _context.Users.FirstOrDefault(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
+    if (user == null)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
-        if (user == null)
-        {
-            return Unauthorized("Invalid credentials.");
-        }
-
-        // Generate JWT token
-        var token = GenerateJwtToken(user);
-
-        return Ok(new { Token = token });
+        return Unauthorized("Invalid credentials.");
     }
 
-    private string GenerateJwtToken(User user)
+    // Retrieve the customer associated with the user
+    var customer = _context.Customers.FirstOrDefault(c => c.UserId == user.Id);
+    if (customer == null)
     {
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]));
-        var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role)
-        };
-
-        var tokenOptions = new JwtSecurityToken(
-            issuer: jwtSettings["Issuer"],
-            audience: jwtSettings["Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["ExpiryMinutes"])),
-            signingCredentials: signinCredentials
-        );
-
-        var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-
-        return tokenString;
+        return Unauthorized("No customer associated with this user.");
     }
+
+    // Generate JWT token
+    var token = GenerateJwtToken(user, customer.Id); // Pass the customer ID
+
+    return Ok(new { Token = token });
+}
+
+private string GenerateJwtToken(User user, int customerId) // Accept customerId as a parameter
+{
+    var jwtSettings = _configuration.GetSection("JwtSettings");
+    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]));
+    var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
+    var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Role, user.Role),
+        new Claim("CustomerId", customerId.ToString()) // Add customer ID as a claim
+    };
+
+    var tokenOptions = new JwtSecurityToken(
+        issuer: jwtSettings["Issuer"],
+        audience: jwtSettings["Audience"],
+        claims: claims,
+        expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["ExpiryMinutes"])),
+        signingCredentials: signinCredentials
+    );
+
+    var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+    return tokenString;
+}
+
+
+
+
 
     [HttpPost]
     public async Task<ActionResult<Customer>> CreateCustomer([FromBody] CreateCustomerDto customerDto)

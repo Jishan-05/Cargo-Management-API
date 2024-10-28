@@ -1,3 +1,4 @@
+using CargoManagementSystem.DTOs;
 using CargoManagementSystem.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,5 +9,8 @@ namespace CargoManagementSystem.Repositories
     {
         Task<IEnumerable<Feedback>> GetAllFeedbacksAsync();
         Task<Feedback> GetFeedbackByIdAsync(int id);
+        Task AddFeedbackAsync(int customerId, CreateFeedbackDto feedbackDto);
+
+
     }
 }

@@ -11052,6 +11052,7 @@
     "net8.0": [
       "HtmlRenderer.PdfSharp >= 1.5.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 8.0.10",
+      "Microsoft.AspNetCore.Cors >= 2.2.0",
       "Microsoft.AspNetCore.Mvc >= 2.2.0",
       "Microsoft.EntityFrameworkCore >= 8.0.10",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.10",
@@ -11116,6 +11117,10 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
             "target": "Package",
             "version": "[8.0.10, )"
+          },
+          "Microsoft.AspNetCore.Cors": {
+            "target": "Package",
+            "version": "[2.2.0, )"
           },
           "Microsoft.AspNetCore.Mvc": {
             "target": "Package",
