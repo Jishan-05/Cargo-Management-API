@@ -39,7 +39,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Cargo Management System ", Version = "v1" });
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
@@ -145,7 +145,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     // app.UseSwaggerUI();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cargo Management System V1"));
 
 }
 app.UseCors("AllowAllOrigins"); // Enable CORS

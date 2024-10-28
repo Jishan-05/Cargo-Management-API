@@ -4,6 +4,7 @@ using CargoManagementSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CargoManagementSystem.Controllers
 {
@@ -18,6 +19,7 @@ namespace CargoManagementSystem.Controllers
             _paymentService = paymentService;
         }
 
+        [Authorize]
         [HttpGet("pending-payments")]
         public async Task<IActionResult> GetPendingPayments()
         {
@@ -26,7 +28,7 @@ namespace CargoManagementSystem.Controllers
         }
 
         
-
+        [Authorize]
         [HttpPost("accept-payment/{id}")]
         public async Task<IActionResult> AcceptPayment(int id, int userId)
         {

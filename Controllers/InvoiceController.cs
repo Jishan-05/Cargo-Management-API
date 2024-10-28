@@ -1,5 +1,6 @@
 using CargoManagementSystem.DTOs;
 using CargoManagementSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace CargoManagementSystem.Controllers
             _invoiceService = invoiceService;
         }
 
+        [Authorize]
         [HttpGet("generate/{bookingId}")]
         public async Task<IActionResult> GenerateInvoice(int bookingId)
         {

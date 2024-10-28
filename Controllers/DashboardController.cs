@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using CargoManagementSystem.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+
 
 [ApiController]
 [Route("api/[controller]")]
@@ -25,6 +27,7 @@ public class DashboardController : ControllerBase
         _parcelService = parcelService;
     }
 
+    [Authorize]
     [HttpGet("overview")]
     public async Task<IActionResult> GetDashboardOverview()
     {

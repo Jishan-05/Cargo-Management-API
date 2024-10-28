@@ -9,7 +9,6 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 
-
 [Route("api/[controller]")]
 [ApiController]
 public class AdminController : ControllerBase
@@ -25,7 +24,7 @@ public class AdminController : ControllerBase
         _configuration = configuration;
         _adminService = adminService;
     }
-
+    [Authorize]
     [HttpGet("admins")]
     public async Task<IActionResult> GetAdminList()
     {
@@ -46,15 +45,21 @@ public class AdminController : ControllerBase
             return Unauthorized("Invalid credentials.");
         }
 
+    var admin = _context.Admins.FirstOrDefault(c => c.UserId == user.Id);
+    if (admin  == null)
+        {
+            return Unauthorized("No admin associated with this user.");
+        }
+
         
-        var token = GenerateJwtToken(user);
+        var token = GenerateJwtToken(user,admin.Id);
 
         return Ok(new { Token = token });
     }
 
 
 
-    private string GenerateJwtToken(User user)
+    private string GenerateJwtToken(User user,int adminId)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]));
@@ -64,7 +69,9 @@ public class AdminController : ControllerBase
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role)
+            new Claim(ClaimTypes.Role, user.Role),
+            new Claim("AdminId", adminId.ToString()) // Add customer ID as a claim
+
         };
 
         var tokenOptions = new JwtSecurityToken(

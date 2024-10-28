@@ -72,7 +72,7 @@ public class EmployeeController : ControllerBase
     }
 
 
-
+    [Authorize]
     // POST: api/Employee
     [HttpPost]
     public async Task<ActionResult<Employee>> CreateEmployee([FromBody] CreateEmployeeDto employeeDto)
@@ -92,6 +92,7 @@ public class EmployeeController : ControllerBase
         return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.Id }, employee);
     }
     
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateEmployee(int id, [FromBody] UpdateEmployeeDto employeeDto)
     {
@@ -103,6 +104,7 @@ public class EmployeeController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<Employee>> GetEmployeeById(int id)
     {
@@ -114,6 +116,7 @@ public class EmployeeController : ControllerBase
         return Ok(employee);
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Employee>>> GetAllEmployees()
     {
@@ -121,6 +124,7 @@ public class EmployeeController : ControllerBase
         return Ok(employees);
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteEmployee(int id)
     {

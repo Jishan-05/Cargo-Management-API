@@ -45,6 +45,7 @@ namespace CargoManagementSystem.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FeedbackDto>>> GetFeedbacks()
         {
@@ -61,7 +62,7 @@ namespace CargoManagementSystem.Controllers
             return Ok(feedback);
         }
 
-[Authorize] // Ensure the user is authenticated
+[Authorize] 
 [HttpPost]
 public async Task<IActionResult> AddFeedback([FromBody] CreateFeedbackDto feedbackDto)
 {

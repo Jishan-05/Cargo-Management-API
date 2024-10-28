@@ -168,7 +168,7 @@ private string GenerateJwtToken(User user, int customerId) // Accept customerId 
 
 
 
-
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Customer>> CreateCustomer([FromBody] CreateCustomerDto customerDto)
     {
@@ -176,6 +176,7 @@ private string GenerateJwtToken(User user, int customerId) // Accept customerId 
         return CreatedAtAction(nameof(GetCustomerById), new { id = customer.Id }, customer);
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCustomer(int id, [FromBody] UpdateCustomerDto customerDto)
     {
@@ -187,6 +188,7 @@ private string GenerateJwtToken(User user, int customerId) // Accept customerId 
         return NoContent();
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<Customer>> GetCustomerById(int id)
     {
@@ -198,6 +200,7 @@ private string GenerateJwtToken(User user, int customerId) // Accept customerId 
         return Ok(customer);
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Customer>>> GetAllCustomers()
     {

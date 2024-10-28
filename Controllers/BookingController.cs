@@ -1,9 +1,13 @@
+using System.Net;
+using System.Reflection.Metadata;
 using CargoManagementSystem.DTOs;
 using CargoManagementSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class BookingController : ControllerBase
@@ -15,9 +19,11 @@ public class BookingController : ControllerBase
         _bookingService = bookingService;
     }
 
+    [Authorize]
     [HttpGet("list")]
     public async Task<IActionResult> GetBookings()
     {
+        var adminIdClaim = User.FindFirst("AdminId");
         var bookings = await _bookingService.GetBookingsAsync();
         return Ok(bookings);
     }
